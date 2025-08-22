@@ -1,21 +1,63 @@
-import React from 'react';
-import './App.css';
-import "bootstrap/dist/css/bootstrap.min.css";
-// import Navbar from './components/Navbar';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import Home from './components/Home';
-import Employee from './pages/Employee';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import './App.css'
+// import { LoginForm } from './pages/LoginForm';
+import About from './components/About';
+import AddItemForm from './components/AddItemForm';
+import { LoginForm } from './pages/LoginForm';
+import { LoginLayout } from './components/LoginLayout';
+import Landing from './pages/Landing';
+  
+function PrivateRoute({ children, roles }) {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
 
-function App() {
-  return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/employee" element={<Employee />} />       
-        </Routes>
-      </Router>
-    </>
-  );
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
+
+  if (roles && !roles.includes(role)) {
+    return <Navigate to="/unauthorized" />;  
+  }
+
+  return children;
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Landing />
+      } />
+        <Route path="/login" element={
+          <LoginLayout 
+          title="Welcome back"
+          subtitle="Login in to your account to continue"
+            >
+              <LoginForm />
+          </LoginLayout>
+          } />
+
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute roles={["ROLE_STAFF", "ROLE_ADMIN"]}>
+              {/* <Dashboard /> */}
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute roles={["ROLE_ADMIN"]}>
+              {/* <AdminPage /> */}
+            </PrivateRoute>
+          }
+        />
+
+        <Route path="/unauthorized" element={<h1>403 Unauthorized </h1>} />
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
+  );
+}
