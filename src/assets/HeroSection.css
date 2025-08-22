@@ -1,0 +1,50 @@
+.hero {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    width: 100%;
+    position: relative;
+}
+
+.carousel-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 90vh;  
+}
+
+.carousel-container img {
+    object-fit: cover;
+    width: 100vw;
+    height: 90vh;
+    opacity: 0.8; 
+}
+
+.hero h1, .hero p {
+    z-index: 1;   
+}
+
+@media (max-width: 768px) {
+    .hero {
+        height: 46vh;   
+    }
+
+    .carousel-container {
+        height: 50vh;  
+    }
+
+    .carousel-container img {
+        height: 50vh;  
+    }
+    .hero h1 {
+        font-size: 2rem;  
+    }
+
+    .hero p {
+        font-size: 1rem;   
+    }
+}
