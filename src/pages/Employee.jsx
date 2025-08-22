@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function EmployeeManagement() {
+function Employee() {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -273,4 +273,4 @@ function EmployeeManagement() {
   );
 }
 
-export default EmployeeManagement;
+export default Employee;

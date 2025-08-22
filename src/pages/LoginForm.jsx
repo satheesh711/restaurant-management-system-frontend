@@ -106,9 +106,9 @@ export function LoginForm() {
           {loading ? 'Loading...' : 'Log in'}
         </motion.button>
 
-        {/* <button type="button" onClick={handleLogout} className="btn btn-danger w-100 mb-3">
+        <button type="button" onClick={handleLogout} className="btn btn-danger w-100 mb-3">
           Log out
-        </button> */}
+        </button>
 
 
       </form>

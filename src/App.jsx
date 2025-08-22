@@ -6,6 +6,7 @@ import AddItemForm from './components/AddItemForm';
 import { LoginForm } from './pages/LoginForm';
 import { LoginLayout } from './components/LoginLayout';
 import Landing from './pages/Landing';
+import Employee from './pages/Employee';
   
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -51,6 +52,15 @@ export default function App() {
           element={
             <PrivateRoute roles={["ROLE_Admin"]}>
               {/* <AdminPage /> */}
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/employee-management"
+          element={
+            <PrivateRoute roles={["ROLE_Admin"]}>
+              <Employee />
             </PrivateRoute>
           }
         />
