@@ -1,12 +1,17 @@
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import './App.css'
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
+import "./App.css";
 // import { LoginForm } from './pages/LoginForm';
-import About from './components/About';
-import AddItemForm from './components/AddItemForm';
-import { LoginForm } from './pages/LoginForm';
-import { LoginLayout } from './components/LoginLayout';
-import Landing from './pages/Landing';
-  
+import About from "./components/About";
+import AddItemForm from "./components/AddItemForm";
+import { LoginForm } from "./pages/LoginForm";
+import { LoginLayout } from "./components/LoginLayout";
+import Landing from "./pages/Landing";
+
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -16,7 +21,7 @@ function PrivateRoute({ children, roles }) {
   }
 
   if (roles && !roles.includes(role)) {
-    return <Navigate to="/unauthorized" />;  
+    return <Navigate to="/unauthorized" />;
   }
 
   return children;
@@ -26,16 +31,18 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Landing />
-      } />
-        <Route path="/login" element={
-          <LoginLayout 
-          title="Welcome back"
-          subtitle="Login in to your account to continue"
+        <Route path="/" element={<Landing />} />
+        <Route
+          path="/login"
+          element={
+            <LoginLayout
+              title="Welcome back"
+              subtitle="Login in to your account to continue"
             >
               <LoginForm />
-          </LoginLayout>
-          } />
+            </LoginLayout>
+          }
+        />
 
         <Route
           path="/dashboard"
