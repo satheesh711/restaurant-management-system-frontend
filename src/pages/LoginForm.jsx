@@ -1,14 +1,17 @@
 import { Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
-import { motion } from 'framer-motion';
-import { login,logout } from "../services/authService";
+import { motion } from "framer-motion";
+import { login, logout } from "../services/authService";
 import { useNavigate } from "react-router-dom";
 
 export function LoginForm() {
   const [loading, setLoading] = useState(false);
-  const [userDetails, setUserDetails] = useState({ username: "", password: "" })
-  const [errorName, setErrorName] = useState(false)
-  const [errorPass, setErrorPass] = useState(false)
+  const [userDetails, setUserDetails] = useState({
+    username: "",
+    password: "",
+  });
+  const [errorName, setErrorName] = useState(false);
+  const [errorPass, setErrorPass] = useState(false);
 
   const navigate = useNavigate();
 
@@ -18,9 +21,9 @@ export function LoginForm() {
       setUserDetails({ ...userDetails, username: e.target.value });
       setErrorName(false);
     } else {
-      setErrorName(true)
+      setErrorName(true);
     }
-  }
+  };
 
   const handlePasswordChange = (e) => {
     setUserDetails({ ...userDetails, password: e.target.value });
@@ -28,25 +31,28 @@ export function LoginForm() {
       setUserDetails({ ...userDetails, password: e.target.value });
       setErrorPass(false);
     } else {
-      setErrorPass(true)
+      setErrorPass(true);
     }
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (localStorage.getItem("token") != null && localStorage.getItem("role") != null) {
+    if (
+      localStorage.getItem("token") != null &&
+      localStorage.getItem("role") != null
+    ) {
       alert("User already Loggedin, Please Logout to login again");
       navigate("/");
     }
     if (!errorName && !errorPass) {
       login(userDetails);
     }
-  }
+  };
 
   const handleLogout = () => {
     logout();
     navigate("/login");
-  }
+  };
 
   return (
     <div>
@@ -73,7 +79,10 @@ export function LoginForm() {
             />
           </div>
           {errorName && (
-            <div className="text-danger">Username allows only alphanumeric characters and underscores with size 3 to 50.</div>
+            <div className="text-danger">
+              Username allows only alphanumeric characters and underscores with
+              size 3 to 50.
+            </div>
           )}
         </div>
 
@@ -92,7 +101,10 @@ export function LoginForm() {
             />
           </div>
           {errorPass && (
-            <div className="text-danger">Password allows only alphanumeric characters and symbols with size 5 to 50.</div>
+            <div className="text-danger">
+              Password allows only alphanumeric characters and symbols with size
+              5 to 50.
+            </div>
           )}
         </div>
 
@@ -103,14 +115,16 @@ export function LoginForm() {
           disabled={loading}
           className="btn btn-primary w-100 mb-3"
         >
-          {loading ? 'Loading...' : 'Log in'}
+          {loading ? "Loading..." : "Log in"}
         </motion.button>
 
-        {/* <button type="button" onClick={handleLogout} className="btn btn-danger w-100 mb-3">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="btn btn-danger w-100 mb-3"
+        >
           Log out
-        </button> */}
-
-
+        </button>
       </form>
       <style>
         {`
@@ -134,6 +148,5 @@ export function LoginForm() {
         `}
       </style>
     </div>
-
-  )
+  );
 }
