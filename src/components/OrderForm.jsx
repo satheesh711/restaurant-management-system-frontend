@@ -10,14 +10,14 @@ export default function OrderForm() {
   const [isSubmited, setIsSubmited] = useState(false);
   const [orderId, setOrderId] = useState(0)
   useEffect(() => {
-    // axios.get("http://localhost:8080/waiters/available")
-    //   .then(res => setWaiters(res.data))
-    //   .catch(err => console.error("Error fetching waiters:", err));
-    setWaiters([
-    { id: 1, name: "John" },
-    { id: 2, name: "Alice" },
-    { id: 3, name: "Bob" },
-  ]);
+    axios.get("http://localhost:8080/api/staff/waiters/available")
+    .then(res => {
+      console.log(res.data.data);
+      setWaiters(res.data.data);
+    })
+    .catch(err => {
+      console.error("Error fetching waiters:", err);
+      setWaiters([]);})
   }, []);
 
   const handleChange = (e) => {
@@ -26,21 +26,21 @@ export default function OrderForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
-    //   const response = await axios.post("http://localhost:8080/orders/addOrder", {
-    //     name: formData.name,
-    //     phone: formData.phone,
-    //     waiterId: selectedWaiter
-    //   });
-    //   console.log("Order created:", response.data); 
-    //   const orderId = response.data.id;
-    // setOrderId(orderId);
-    //setIsSubmited(true);
-    // } catch (error) {
-    //   console.error("Error:", error.response?.data || error.message);
-    // }
+    try {
+      console.log(formData.name, formData.phone, selectedWaiter);
+      const response = await axios.post("http://localhost:8080/api/staff/orders/addOrder", {
+        name: formData.name,
+        phone: formData.phone,
+        waiterId: selectedWaiter
+      });
+      console.log("Order created:", response.data); 
+      const orderId = response.data.data;
+    setOrderId(orderId);
     setIsSubmited(true);
-    console.log(formData.name, formData.phone, selectedWaiter);
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+    }
+    
   };
 
   return (
@@ -59,7 +59,7 @@ export default function OrderForm() {
       <select id="waiter" value={selectedWaiter} onChange={(e) => setSelectedWaiter(e.target.value)} required>
         <option value="">Waiters</option>
         {waiters.map(waiter => (
-          <option key={waiter.id} value={waiter.id}>{waiter.name}</option>
+          <option key={waiter.waiterId} value={waiter.waiterId}>{waiter.name}</option>
         ))} 
       </select>
       <br/>
