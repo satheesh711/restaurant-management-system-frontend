@@ -1,36 +1,59 @@
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, User } from "lucide-react";
 import { useState } from "react";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
+import { login, logout } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 
 export function LoginForm() {
   const [loading, setLoading] = useState(false);
-  const [userDetails, setUserDetails] = useState({ username: "", password: "" })
-  const [errorName, setErrorName] = useState(false)
-  const [errorPass, setErrorPass] = useState(false)
+  const [userDetails, setUserDetails] = useState({
+    username: "",
+    password: "",
+  });
+  const [errorName, setErrorName] = useState(false);
+  const [errorPass, setErrorPass] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => {
-    let username = e.target.value;
-    if (/[a-zA-Z -.()0-9]{3,50}/.test(name)) {
-      setUserDetails(...userDetails, username);
+    setUserDetails({ ...userDetails, username: e.target.value });
+    if (/^[a-zA-Z_0-9]{3,50}$/.test(e.target.value)) {
+      setUserDetails({ ...userDetails, username: e.target.value });
       setErrorName(false);
     } else {
-      setErrorName(true)
+      setErrorName(true);
     }
-  }
+  };
 
   const handlePasswordChange = (e) => {
-    let password = e.target.value;
-    if (/[a-zA-Z -.()0-9]{0,50}/.test(password)) {
-      setUserDetails(...userDetails, password);
+    setUserDetails({ ...userDetails, password: e.target.value });
+    if (/^[a-zA-Z -.()0-9]{5,50}$/.test(e.target.value)) {
+      setUserDetails({ ...userDetails, password: e.target.value });
       setErrorPass(false);
     } else {
-      setErrorPass(true)
+      setErrorPass(true);
     }
-  }
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-  }
+    e.preventDefault();
+    if (
+      localStorage.getItem("token") != null &&
+      localStorage.getItem("role") != null
+    ) {
+      alert("User already Loggedin, Please Logout to login again");
+      navigate("/");
+    }
+    if (!errorName && !errorPass) {
+      login(userDetails);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div>
       {loading && (
@@ -42,22 +65,25 @@ export function LoginForm() {
       )}
       <form onSubmit={handleSubmit} className="mb-4">
         <div className="mb-4">
-          <label className="form-label">Email</label>
+          <label className="form-label">Username</label>
           <div className="input-group">
             <span className="input-group-text">
-              <Mail size={20} className="text-muted" />
+              <User size={20} className="text-muted" />
             </span>
             <input
-              type="email"
+              type="text"
               className={`form-control `}
               value={userDetails.username}
               onChange={handleUsernameChange}
-              placeholder="Enter your email"
+              placeholder="Enter your username"
             />
-            {errorName && (
-              <div className="text-danger">error</div>
-            )}
           </div>
+          {errorName && (
+            <div className="text-danger">
+              Username allows only alphanumeric characters and underscores with
+              size 3 to 50.
+            </div>
+          )}
         </div>
 
         <div className="mb-4">
@@ -73,10 +99,13 @@ export function LoginForm() {
               className={`form-control`}
               placeholder="Enter your password"
             />
-            {errorPass && (
-              <div className="text-danger">error</div>
-            )}
           </div>
+          {errorPass && (
+            <div className="text-danger">
+              Password allows only alphanumeric characters and symbols with size
+              5 to 50.
+            </div>
+          )}
         </div>
 
         <motion.button
@@ -86,10 +115,16 @@ export function LoginForm() {
           disabled={loading}
           className="btn btn-primary w-100 mb-3"
         >
-          {loading ? 'Loading...' : 'Log in'}
+          {loading ? "Loading..." : "Log in"}
         </motion.button>
 
-
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="btn btn-danger w-100 mb-3"
+        >
+          Log out
+        </button>
       </form>
       <style>
         {`
@@ -113,6 +148,5 @@ export function LoginForm() {
         `}
       </style>
     </div>
-
-  )
+  );
 }
