@@ -33,7 +33,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Item />} />
+        <Route path="/" element={<Home />} />
         <Route
           path="/login"
           element={
