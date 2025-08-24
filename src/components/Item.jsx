@@ -287,8 +287,8 @@ export const Item = () => {
                                     placeholder="Price"
                                     value={formData.price}
                                     onChange={(e) => {
-                                        const value =e.target.value
-                                        setFormData({ ...formData, price:  value})
+                                        const value = e.target.value
+                                        setFormData({ ...formData, price: value })
                                         const errorMessage = validateField("price", value);
                                         setErrors((prev) => ({ ...prev, price: errorMessage }));
                                     }
@@ -345,8 +345,8 @@ export const Item = () => {
                                 <select
                                     className={`form-control mb-2 ${errors.category ? "is-invalid" : ""}`}
                                     value={formData.category}
-                                    onChange={(e) =>{
-                                         const value = e.target.value;
+                                    onChange={(e) => {
+                                        const value = e.target.value;
                                         setFormData({ ...formData, category: e.target.value })
                                         const errorMessage = validateField("category", value);
                                         setErrors((prev) => ({ ...prev, category: errorMessage }));
