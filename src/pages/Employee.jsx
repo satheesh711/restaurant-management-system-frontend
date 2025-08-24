@@ -53,10 +53,7 @@ function Employee() {
         );
         alert("Employee updated successfully");
       } else {
-        await api.post(
-          "api/admin/employees/add",
-          payload
-        );
+        await api.post("api/admin/employees/add", payload);
         alert("Employee added successfully");
       }
       setIsModalOpen(false);
