@@ -40,11 +40,13 @@ export function LoginForm() {
     }
     if (!errorName && !errorPass) {
       login(userDetails);
+      alert("User LoggedIn successfully");
     }
   }
 
   const handleLogout = () => {
     logout();
+    alert("User Loggedout Successfully");
     navigate("/login");
   }
 
