@@ -6,14 +6,13 @@ import {
 } from "react-router-dom";
 import "./App.css";
 // import { LoginForm } from './pages/LoginForm';
-import About from './components/About';
-import AddItemForm from './components/AddItemForm';
-import { LoginForm } from './pages/LoginForm';
-import { LoginLayout } from './components/LoginLayout';
-import Landing from './pages/Landing';
-import Employee from './pages/Employee';
-import { Item } from "./components/item";
-  
+import About from "./components/About";
+import AddItemForm from "./components/AddItemForm";
+import { LoginForm } from "./pages/LoginForm";
+import { LoginLayout } from "./components/LoginLayout";
+import Landing from "./pages/Landing";
+import Employee from "./pages/Employee";
+
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -49,7 +48,7 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute roles={["ROLE_Staff", "ROLE_Admin"]}>
+            <PrivateRoute roles={["ROLE_STAFF", "ROLE_ADMIN"]}>
               {/* <Dashboard /> */}
             </PrivateRoute>
           }
@@ -58,7 +57,7 @@ export default function App() {
         <Route
           path="/admin"
           element={
-            <PrivateRoute roles={["ROLE_Admin"]}>
+            <PrivateRoute roles={["ROLE_ADMIN"]}>
               {/* <AdminPage /> */}
             </PrivateRoute>
           }
@@ -67,7 +66,7 @@ export default function App() {
         <Route
           path="/employee-management"
           element={
-            <PrivateRoute roles={["ROLE_Admin"]}>
+            <PrivateRoute roles={["ROLE_ADMIN"]}>
               <Employee />
             </PrivateRoute>
           }

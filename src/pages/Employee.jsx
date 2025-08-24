@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../config/axiosConfig";
 
 function Employee() {
   const [employees, setEmployees] = useState([]);
@@ -17,7 +18,7 @@ function Employee() {
   const fetchEmployees = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:8080/api/admin/employees");
+      const res = await api.get("/api/admin/employees");
       if (res.data.success) {
         setEmployees(
           res.data.data.sort((a, b) => a.status.localeCompare(b.status))
@@ -46,14 +47,14 @@ function Employee() {
 
     try {
       if (editingEmployee) {
-        await axios.put(
-          `http://localhost:8080/api/admin/employees/update/${editingEmployee.empId}`,
+        await api.put(
+          `api/admin/employees/update/${editingEmployee.empId}`,
           payload
         );
         alert("Employee updated successfully");
       } else {
-        await axios.post(
-          "http://localhost:8080/api/admin/employees/add",
+        await api.post(
+          "api/admin/employees/add",
           payload
         );
         alert("Employee added successfully");
