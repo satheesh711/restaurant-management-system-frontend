@@ -12,6 +12,7 @@ import { LoginForm } from './pages/LoginForm';
 import { LoginLayout } from './components/LoginLayout';
 import Landing from './pages/Landing';
 import Employee from './pages/Employee';
+import { Item } from "./components/item";
   
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -32,7 +33,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Item />} />
         <Route
           path="/login"
           element={
