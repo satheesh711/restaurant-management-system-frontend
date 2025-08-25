@@ -10,13 +10,15 @@ export default function OrderForm() {
   const [orderId, setOrderId] = useState(0);
 
   useEffect(() => {
-    api
-      .get("/api/staff/waiters/available")
-      .then((res) => setWaiters(res.data.data || []))
-      .catch((err) => {
-        console.error("Error fetching waiters:", err);
-        setWaiters([]);
-      });
+
+    api.get("/api/staff/waiters/available")
+    .then(res => {
+      console.log(res.data.data);
+      setWaiters(res.data.data);
+    })
+    .catch(err => {
+      console.error("Error fetching waiters:", err);
+      setWaiters([]);})
   }, []);
 
   const handleChange = (e) => {
@@ -26,6 +28,7 @@ export default function OrderForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(formData.name, formData.phone, selectedWaiter);
       const response = await api.post("/api/staff/orders/addOrder", {
         name: formData.name,
         phone: formData.phone,

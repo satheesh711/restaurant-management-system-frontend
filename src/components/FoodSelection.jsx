@@ -6,6 +6,7 @@ export default function FoodSelection({ id }) {
   const [selectedItems, setSelectedItems] = useState({});
 
   useEffect(() => {
+    
     api
       .get("/api/staff/items/availableItems")
       .then((res) => {
@@ -63,6 +64,7 @@ export default function FoodSelection({ id }) {
       console.error("Error:", err.response?.data || err.message);
     }
   };
+
 
   return (
     <div className="container mt-4">

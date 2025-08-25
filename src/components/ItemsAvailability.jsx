@@ -32,17 +32,15 @@ function ItemsManagement() {
       const res = await api.post(`/api/staff/items/availability/${id}`);
       if (res.data.success) {
         alert("Availability updated!");
-
-        // Ensure UI updates correctly
         setItems((prev) =>
           prev.map((item) =>
             item.id === id
               ? {
                   ...item,
                   available:
-                    item.available === "AVAILABLE"
-                      ? "UNAVAILABLE"
-                      : "AVAILABLE",
+                    item.available === "Available"
+                      ? "Unavailable"
+                      : "Available",
                 }
               : item
           )
@@ -64,7 +62,7 @@ function ItemsManagement() {
 
       <div className="row">
         {items.map((item) => {
-          const isAvailable = item.available === "AVAILABLE";
+          const isAvailable = item.available === "Available";
           return (
             <div key={item.id} className="col-md-4 mb-4">
               <div className="card h-100 shadow">
