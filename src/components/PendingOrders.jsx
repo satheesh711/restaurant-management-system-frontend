@@ -30,6 +30,7 @@ export default function PendingOrders() {
           order.orderId === orderId ? { ...order, status: newStatus } : order
         )
       );
+      fetchPendingOrders();
     } catch (err) {
       console.error("Error updating status:", err);
     }
@@ -49,7 +50,7 @@ export default function PendingOrders() {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-3">Orders Table</h2>
+      <h2 className="mb-3">Pending Orders</h2>
       <div className="d-flex justify-content-between mb-2">
         <span>
           Total Records: <strong>{pendingOrders.length}</strong>

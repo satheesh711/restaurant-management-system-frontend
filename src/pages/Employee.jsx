@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/reset.css";
 import "../assets/Employee.css";
 import Swal from "sweetalert2";
-import { message } from "antd";
 
 function Employee() {
   const [employees, setEmployees] = useState([]);
@@ -106,6 +105,7 @@ function Employee() {
   const handleDelete = async (id) => {
     try {
       const res = await api.delete(`/api/admin/employees/delete/${id}`);
+      console.log(res);
       Swal.fire({
         icon: "success",
         title: "Deleted!",
