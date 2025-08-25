@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 
-function ItemTable({ columns, data, onEdit, onDelete, itemsPerPage = 5,currentPage, setCurrentPage  }) {
-
-
+function ItemTable({
+  columns,
+  data,
+  onEdit,
+  onDelete,
+  itemsPerPage = 5,
+  currentPage,
+  setCurrentPage,
+}) {
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentItems = data.slice(indexOfFirst, indexOfLast);
@@ -35,7 +41,9 @@ function ItemTable({ columns, data, onEdit, onDelete, itemsPerPage = 5,currentPa
             currentItems.map((row, index) => (
               <tr key={row.id || index}>
                 <td>{indexOfFirst + index + 1}</td>
-                <td><img src={row.imageUrl} alt={row.imageUrl}  width={50} /></td>
+                <td>
+                  <img src={row.imageUrl} alt={row.imageUrl} width={50} />
+                </td>
 
                 {columns.map((col) => (
                   <td key={col.key}>{row[col.key]}</td>
@@ -75,7 +83,10 @@ function ItemTable({ columns, data, onEdit, onDelete, itemsPerPage = 5,currentPa
       <nav>
         <ul className="pagination justify-content-center">
           <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-            <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
+            <button
+              className="page-link"
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
               Previous
             </button>
           </li>
@@ -84,13 +95,23 @@ function ItemTable({ columns, data, onEdit, onDelete, itemsPerPage = 5,currentPa
               key={num + 1}
               className={`page-item ${currentPage === num + 1 ? "active" : ""}`}
             >
-              <button className="page-link" onClick={() => setCurrentPage(num + 1)}>
+              <button
+                className="page-link"
+                onClick={() => setCurrentPage(num + 1)}
+              >
                 {num + 1}
               </button>
             </li>
           ))}
-          <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-            <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
+          <li
+            className={`page-item ${
+              currentPage === totalPages ? "disabled" : ""
+            }`}
+          >
+            <button
+              className="page-link"
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
               Next
             </button>
           </li>

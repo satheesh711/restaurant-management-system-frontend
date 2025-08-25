@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../config/axiosConfig";
 
 function AdminDashboardMain() {
@@ -14,21 +13,21 @@ function AdminDashboardMain() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [empRes, itemsRes, ordersRes, activeEmpRes, waitersRes] =
-          await Promise.all([
-            api.get("/api/admin/employees"),
-            api.get("/api/staff/items/all"),
-            // api.get("/api/staff/orders/allOrders"),
-            api.get("/api/admin/employees/active"),
-            api.get("/api/staff/waiters/available"),
-          ]);
+        // const [empRes, itemsRes, ordersRes, activeEmpRes, waitersRes] =
+        const [empRes, itemsRes, activeEmpRes, waitersRes] = await Promise.all([
+          api.get("/api/admin/employees"),
+          api.get("/api/staff/items/all"),
+          // api.get("/api/staff/orders/allOrders"),
+          api.get("/api/admin/employees/active"),
+          api.get("/api/staff/waiters/available"),
+        ]);
 
-          console.log(waitersRes);
+        console.log(waitersRes);
 
         setSummary({
           employees: empRes?.data.data.length,
           items: itemsRes?.data.data.length,
-          orders: ordersRes?.data.data.length,
+          //   orders: ordersRes?.data.data.length,
           activeEmployees: activeEmpRes?.data.data.length,
           availableWaiters: waitersRes?.data?.data?.length || 0,
         });
@@ -42,7 +41,7 @@ function AdminDashboardMain() {
 
   return (
     <div className="p-4">
-      <h2 className="mb-4">📊 Summary Reports</h2>
+      <h2 className="mb-4">Summary Reports</h2>
       <div className="row g-4">
         <div className="col-md-4">
           <div className="card text-center shadow-sm p-3">
