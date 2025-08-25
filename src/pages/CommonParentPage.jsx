@@ -60,6 +60,14 @@ export default function AdminDashboard() {
                 </Link>
               </li>
             )}
+
+            {isStaff && (
+              <li className="nav-item">
+                <Link className="nav-link text-dark" to="/staff/item-availability">
+                  Item Availability Management
+                </Link>
+              </li>
+            )}
           </ul>
         </div>  
 
