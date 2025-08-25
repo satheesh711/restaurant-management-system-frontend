@@ -1,20 +1,12 @@
 import { useState, useEffect } from "react";
-<<<<<<< HEAD
-import Swal from "sweetalert2";
-=======
 import { useNavigate } from "react-router-dom";
->>>>>>> 1f6666bc3838e4d725c133c33b12171c8dc05b12
 import api from "../config/axiosConfig";
 
 export default function FoodSelection({ name, phone, waiterId }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
-<<<<<<< HEAD
-  const [reviewMode, setReviewMode] = useState(false);
-=======
   const [orderId, setOrderId] = useState(0);
   const navigate = useNavigate();
->>>>>>> 1f6666bc3838e4d725c133c33b12171c8dc05b12
 
   useEffect(() => {
     api
@@ -48,164 +40,108 @@ export default function FoodSelection({ name, phone, waiterId }) {
     });
   };
 
-  const getPayload = () => {
-    return Object.entries(selectedItems).map(([itemId, qty]) => {
-      const item = items.find((i) => i.id === parseInt(itemId));
-      return {
-        orderId: id,
-        itemId: parseInt(itemId),
-        quantity: qty,
-        price: item.price,
-      };
-    });
-  };
-
-  const handleFirstConfirm = () => {
-    setReviewMode(true);
-  };
-
-  const handleFinalConfirm = async () => {
-    const payload = getPayload();
-
+  const handleConfirm = async () => {
     try {
-      await api.post("/api/staff/order-details", payload, {
-        headers: { "Content-Type": "application/json" },
-      });
+      if (Object.keys(selectedItems).length === 0) {
+        alert("Select atleast 1 item");
+      } else {
+        const response = await api.post("/api/staff/orders/addOrder", {
+          name: name,
+          phone: phone,
+          waiterId: waiterId,
+        });
+        const id = response.data.data;
+        console.log(id);
+        setOrderId(id);
+        console.log(orderId);
 
-      await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
-        headers: { "Content-Type": "application/json" },
-      });
+        const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
+          const item = items.find((i) => i.id === parseInt(itemId));
+          console.log(item);
+          return {
+            orderId: id,
+            itemId: parseInt(itemId),
+            quantity: qty,
+            price: item.price,
+          };
+        });
 
-      Swal.fire({
-        icon: "success",
-        title: "Order Placed Successfully!",
-        text: "Your food order has been confirmed.",
-        confirmButtonColor: "#3085d6",
-      });
+        console.log(payload);
+        await api.post("/api/staff/order-details", payload, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log("Items added successfully");
 
-      setSelectedItems({});
-      setReviewMode(false);
+        await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log("Amount updated successfully");
+        navigate("/staff/order-management");
+      }
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
-      Swal.fire({
-        icon: "error",
-        title: "Failed!",
-        text: "Something went wrong while placing the order.",
-      });
     }
   };
 
-  const totalAmount = getPayload().reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
-
   return (
     <div className="container mt-4">
-      {!reviewMode ? (
-        <>
-          <h2 className="mb-4 text-center">Select Food Items</h2>
-          <div className="row">
-            {items.map((item) => {
-              const quantity = selectedItems[item.id] || 0;
-              return (
-                <div key={item.id} className="col-md-4 mb-4">
-                  <div className="card h-100 shadow">
-                    <img
-                      src={item.imageUrl}
-                      className="card-img-top"
-                      alt={item.name}
-                      style={{ height: "200px", objectFit: "cover" }}
-                    />
-                    <div className="card-body d-flex flex-column">
-                      <h5 className="card-title">{item.name}</h5>
-                      <p className="card-text">{item.description}</p>
-                      <p className="mb-2">
-                        <strong>Price:</strong> ₹{item.price}
-                      </p>
+      <h2 className="mb-4 text-center">Select Food Items</h2>
+      <div className="row">
+        {items.map((item) => {
+          const quantity = selectedItems[item.id] || 0;
+          return (
+            <div key={item.id} className="col-md-4 mb-4">
+              <div className="card h-100 shadow">
+                <img
+                  src={item.imageUrl}
+                  className="card-img-top"
+                  alt={item.name}
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title">{item.name}</h5>
+                  <p className="card-text">{item.description}</p>
+                  <p className="mb-2">
+                    <strong>Price:</strong> ₹{item.price}
+                  </p>
 
-                      <div className="mt-auto d-flex align-items-center justify-content-between">
-                        {quantity > 0 ? (
-                          <div className="d-flex align-items-center gap-2">
-                            <button
-                              className="btn btn-sm btn-danger"
-                              onClick={() => handleDecrement(item.id)}
-                            >
-                              -
-                            </button>
-                            <span>{quantity}</span>
-                            <button
-                              className="btn btn-sm btn-success"
-                              onClick={() => handleIncrement(item.id)}
-                            >
-                              +
-                            </button>
-                          </div>
-                        ) : (
-                          <button
-                            className="btn btn-primary btn-sm"
-                            onClick={() => handleAdd(item.id)}
-                          >
-                            Add
-                          </button>
-                        )}
+                  <div className="mt-auto d-flex align-items-center justify-content-between">
+                    {quantity > 0 ? (
+                      <div className="d-flex align-items-center gap-2">
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleDecrement(item.id)}
+                        >
+                          -
+                        </button>
+                        <span>{quantity}</span>
+                        <button
+                          className="btn btn-sm btn-success"
+                          onClick={() => handleIncrement(item.id)}
+                        >
+                          +
+                        </button>
                       </div>
-                    </div>
+                    ) : (
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => handleAdd(item.id)}
+                      >
+                        Add
+                      </button>
+                    )}
                   </div>
                 </div>
-              );
-            })}
-          </div>
-          {Object.keys(selectedItems).length > 0 && (
-            <div className="text-center mt-3">
-              <button className="btn btn-success" onClick={handleFirstConfirm}>
-                Proceed
-              </button>
+              </div>
             </div>
-          )}
-        </>
-      ) : (
-        <>
-          <h2 className="mb-4 text-center">Review Your Order</h2>
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Price (₹)</th>
-                <th>Subtotal (₹)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {getPayload().map((item) => (
-                <tr key={item.itemId}>
-                  <td>{items.find((i) => i.id === item.itemId)?.name}</td>
-                  <td>{item.quantity}</td>
-                  <td>{item.price}</td>
-                  <td>{item.price * item.quantity}</td>
-                </tr>
-              ))}
-              <tr>
-                <td colSpan="3" className="text-end fw-bold">
-                  Total
-                </td>
-                <td className="fw-bold">₹{totalAmount}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="text-center mt-3">
-            <button
-              className="btn btn-secondary me-2"
-              onClick={() => setReviewMode(false)}
-            >
-              Back
-            </button>
-            <button className="btn btn-success" onClick={handleFinalConfirm}>
-              Confirm Order
-            </button>
-          </div>
-        </>
-      )}
+          );
+        })}
+      </div>
+      <div className="text-center mt-3">
+        <button className="btn btn-success" onClick={handleConfirm}>
+          Confirm
+        </button>
+      </div>
     </div>
   );
 }
