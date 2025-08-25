@@ -39,7 +39,7 @@ export default function AddItemForm() {
 
   try {
     const response = await axios.post(
-      "http://localhost:8081/api/items/addItem",
+      "http://localhost:8080/api/items/addItem",
       form,
       
     );

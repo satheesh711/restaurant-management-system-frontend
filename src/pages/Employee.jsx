@@ -67,6 +67,7 @@ function Employee() {
     };
     try {
       if (editingEmployee) {
+        console.log("Updating employee:", editingEmployee.empId, payload);
         const res = await api.put(
           `/api/admin/employees/update/${editingEmployee.empId}`,
           payload
