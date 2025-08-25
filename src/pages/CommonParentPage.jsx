@@ -20,7 +20,7 @@ export default function AdminDashboard() {
   return (
     <div className="d-flex flex-column vh-100">
       <nav className="navbar navbar-expand-lg navbar-light bg-light px-4 border-bottom">
-        <span className="navbar-brand fw-bold">{isAdmin && <span>Admin</span>}{isStaff && <span>Staff</span>} Dashboard</span>
+        <span className="navbar-brand fw-bold">{isAdmin && <span>Admin</span>}{isStaff && <span>Staff</span>} Dashboard ( Welcome {userContext?.user?.sub} )</span>
         <div className="ms-auto">
           <button className="btn btn-primary" onClick={logoutHandler}>Logout</button>
         </div>
@@ -32,30 +32,30 @@ export default function AdminDashboard() {
           <h5 className="fw-bold mb-4">Menu</h5>
           <ul className="nav flex-column gap-2">
             {isAdmin && <li className="nav-item">
-              <Link className="nav-link text-dark" to="/admin">
+              <Link className={`nav-link text-dark ${location.pathname === "/admin" ? "fw-bold" : ""}`} to="/admin">
                 Dashboard
               </Link>
             </li>}
             {isStaff && <li className="nav-item">
-              <Link className="nav-link text-dark" to="/staff">
+              <Link className={`nav-link text-dark ${location.pathname === "/staff" ? "fw-bold" : ""}`} to="/staff">
                 Pending Orders
               </Link>
             </li>}
             {isAdmin && (
               <li className="nav-item">
-                <Link className="nav-link text-dark" to="/admin/employee-management">
+                <Link className={`nav-link text-dark ${location.pathname === "/admin/employee-management" ? "fw-bold" : ""}`} to="/admin/employee-management">
                   Employee Management
                 </Link>
               </li>
             )}
             {isAdmin && <li className="nav-item">
-              <Link className="nav-link text-dark" to="/admin/item-management">
+              <Link className={`nav-link text-dark ${location.pathname === "/admin/item-management" ? "fw-bold" : ""}`} to="/admin/item-management">
                 Item Management
               </Link>
             </li>}
             {isStaff && (
               <li className="nav-item">
-                <Link className="nav-link text-dark" to="/staff/take-orders">
+                <Link className={`nav-link text-dark ${location.pathname === "/staff/take-orders" ? "fw-bold" : ""}`} to="/staff/take-orders">
                   Take Orders
                 </Link>
               </li>
@@ -63,14 +63,14 @@ export default function AdminDashboard() {
 
             {isStaff && (
               <li className="nav-item">
-                <Link className="nav-link text-dark" to="/staff/item-availability">
+                <Link className={`nav-link text-dark ${location.pathname === "/staff/item-availability" ? "fw-bold" : ""}`} to="/staff/item-availability">
                   Item Availability Management
                 </Link>
               </li>
             )}
             {isStaff && (
               <li className="nav-item">
-                <Link className="nav-link text-dark" to="/staff/order-management">
+                <Link className={`nav-link text-dark ${location.pathname === "/staff/order-management" ? "fw-bold" : ""}`} to="/staff/order-management">
                   Order Management
                 </Link>
               </li>
