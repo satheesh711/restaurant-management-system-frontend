@@ -10,6 +10,7 @@ import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
 import ItemsManagement from "./components/ItemsAvailability";
 import OrdersTable from "./components/OrdersTable";
+import PendingOrders from "./components/PendingOrders";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -78,7 +79,7 @@ export default function App() {
           index: true,
           element: (
             <PrivateRoute roles={["ROLE_STAFF"]}>
-              <h1>Hi</h1>
+              <PendingOrders />
             </PrivateRoute>
           ),
         },

@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import api from "../config/axiosConfig";
 
-export default function OrdersTable() {
-  const [orders, setOrders] = useState([]);
+export default function PendingOrders() {
+  const [pendingOrders, setPendingOrders] = useState([]);
   const [statuses] = useState(["Pending", "Cancelled", "Completed"]);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
+  const itemsPerPage = 5;
 
   useEffect(() => {
-    fetchOrders();
+    fetchPendingOrders();
   }, []);
 
-  const fetchOrders = async () => {
+  const fetchPendingOrders = async () => {
     try {
       const res = await api.get("/api/staff/orders/allOrders");
-      if (res.data.success) setOrders(res.data.data);
+      const allOrders = await res.data.data;
+      if (res.data.success) setPendingOrders(allOrders.filter(order => order.status === "PENDING"));
     } catch (err) {
       console.error("Error fetching orders:", err);
     }
@@ -23,9 +24,8 @@ export default function OrdersTable() {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await api.put(
-        `/api/staff/orders/updateStatus?orderId=${orderId}&status=${newStatus}`
-      );
-      setOrders((prev) =>
+        `/api/staff/orders/updateStatus?orderId=${orderId}&status=${newStatus}`);
+      setPendingOrders((prev) =>
         prev.map((order) =>
           order.orderId === orderId ? { ...order, status: newStatus } : order
         )
@@ -44,15 +44,15 @@ export default function OrdersTable() {
 
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentOrders = orders.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
+  const currentOrders = pendingOrders.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(pendingOrders.length / itemsPerPage);
 
   return (
     <div className="container mt-4">
       <h2 className="mb-3">Orders Table</h2>
       <div className="d-flex justify-content-between mb-2">
         <span>
-          Total Records: <strong>{orders.length}</strong>
+          Total Records: <strong>{pendingOrders.length}</strong>
         </span>
         <span>
           Page {currentPage} of {totalPages || 1}
@@ -73,7 +73,7 @@ export default function OrdersTable() {
         </thead>
         <tbody>
           {currentOrders.length > 0 ? (
-            currentOrders.map((order) => {
+            currentOrders.map((order, index) => {
               const availableStatuses = getAvailableStatuses(order.status);
               return (
                 <tr key={order.orderId}>

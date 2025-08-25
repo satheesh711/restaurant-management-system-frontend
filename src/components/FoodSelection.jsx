@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
+<<<<<<< HEAD
 import Swal from "sweetalert2";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> 1f6666bc3838e4d725c133c33b12171c8dc05b12
 import api from "../config/axiosConfig";
 
-export default function FoodSelection({ id }) {
+export default function FoodSelection({ name, phone, waiterId }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
+<<<<<<< HEAD
   const [reviewMode, setReviewMode] = useState(false);
+=======
+  const [orderId, setOrderId] = useState(0);
+  const navigate = useNavigate();
+>>>>>>> 1f6666bc3838e4d725c133c33b12171c8dc05b12
 
   useEffect(() => {
     api
