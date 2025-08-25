@@ -77,7 +77,7 @@ export default function App() {
           index: true,
           element: (
             <PrivateRoute roles={["ROLE_STAFF"]}>
-              <Dashboard />
+              <h1>Hi</h1>
             </PrivateRoute>
           ),
         },

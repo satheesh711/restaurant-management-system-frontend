@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import api from "../config/axiosConfig";
 
 export default function FoodSelection({id}) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
 
   useEffect(() => {
+<<<<<<< HEAD
     axios
       .get("http://localhost:8081/api/staff/items/all")
+=======
+    api
+      .get("/api/staff/items/all")
+>>>>>>> fb181301e573e786caaba2cf5d0463d295b43c47
       .then((res) => {
         if (res.data.success) {
         setItems(res.data.data);
@@ -59,13 +65,22 @@ export default function FoodSelection({id}) {
 });
   console.log(payload);
   try {
+<<<<<<< HEAD
     await axios.post("http://localhost:8081/api/staff/order-details", payload, {
+=======
+    await api.post("/api/staff/order-details", payload, {
+>>>>>>> fb181301e573e786caaba2cf5d0463d295b43c47
       headers: { "Content-Type": "application/json" }
     })
     console.log("Items added successfully");
 
+<<<<<<< HEAD
     await axios.put(
       `http://localhost:8081/api/staff/orders/updateAmount/${id}`,
+=======
+    await api.put(
+      `/api/staff/orders/updateAmount/${id}`,
+>>>>>>> fb181301e573e786caaba2cf5d0463d295b43c47
       null,
       { headers: { "Content-Type": "application/json" } }
     );
