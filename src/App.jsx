@@ -1,14 +1,14 @@
 import "./App.css";
 import { LoginForm } from "./pages/LoginForm";
-import Landing from "./pages/Landing";
 import Employee from "./pages/Employee";
-import { createBrowserRouter,RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import UserProvider from "./utilities/UserContext";
 import AdminPage from "./pages/CommonParentPage";
-import {Item} from "./components/Item";
+import { Item } from "./components/Item";
 import Dashboard from "./pages/Dashboard";
 import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
+// import ItemsManagement from "./components/ItemsAvailability";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -21,12 +21,11 @@ function PrivateRoute({ children, roles }) {
   if (roles && !roles.includes(role)) {
     return <Navigate to="/unauthorized" />;
   }
-  console.log("Hi")
+  console.log("Hi");
   return children;
 }
 
 export default function App() {
-
   const appRouter = createBrowserRouter([
     {
       path: "/",
@@ -34,7 +33,11 @@ export default function App() {
     },
     {
       path: "/admin",
-      element: <UserProvider><AdminPage /></UserProvider>,
+      element: (
+        <UserProvider>
+          <AdminPage />
+        </UserProvider>
+      ),
       children: [
         {
           index: true,
@@ -59,12 +62,16 @@ export default function App() {
               <Item />
             </PrivateRoute>
           ),
-        }
+        },
       ],
     },
     {
       path: "/staff",
-      element: <UserProvider><StaffPage /></UserProvider>,
+      element: (
+        <UserProvider>
+          <StaffPage />
+        </UserProvider>
+      ),
       children: [
         {
           index: true,
@@ -82,14 +89,14 @@ export default function App() {
             </PrivateRoute>
           ),
         },
-        // {
-        //   path: "item-management",
-        //   element: (
-        //     <PrivateRoute roles={["ROLE_STAFF"]}>
-        //       <Item />
-        //     </PrivateRoute>
-        //   ),
-        // }
+        {
+          path: "item-availability",
+          element: (
+            <PrivateRoute roles={["ROLE_STAFF"]}>
+              <ItemsManagement />
+            </PrivateRoute>
+          ),
+        },
       ],
     },
   ]);
