@@ -7,7 +7,8 @@ export default function OrderForm() {
   const [waiters, setWaiters] = useState([]);
   const [selectedWaiter, setSelectedWaiter] = useState("");
   const [isSubmited, setIsSubmited] = useState(false);
-  const [error, setError] = useState(false);
+  const [errorName, setErrorName] = useState(false);
+  const [errorPhone, setErrorPhone] = useState(false);
 
   useEffect(() => {
     api
@@ -27,9 +28,10 @@ export default function OrderForm() {
 
   if (e.target.name === "phone") {
     value = value.replace(/\D/g, "").substring(0, 10);
-    setError(!/^[6-9]\d{9}$/.test(value));
+    setErrorPhone(!/^[6-9]\d{9}$/.test(value));
   } else if (e.target.name === "name") {
     value = value.replace(/[^a-zA-Z ]/g, "");
+    setErrorName(!/[a-zA-Z]+/.test(value));
   }
 
   setFormData({ ...formData, [e.target.name]: value });
@@ -37,7 +39,7 @@ export default function OrderForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (error || !formData.name || !selectedWaiter) return;
+    if (errorPhone || errorName || !selectedWaiter) return;
     setIsSubmited(true);
   };
 
@@ -65,7 +67,7 @@ export default function OrderForm() {
                   </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${errorName ? "is-invalid" : ""}`}
                     id="name"
                     name="name"
                     placeholder="Enter customer name"
@@ -73,6 +75,11 @@ export default function OrderForm() {
                     onChange={handleChange}
                     required
                   />
+                  {errorName && (
+                <div className="invalid-feedback">
+                  Name should only have letters and spaces, with at least 1 letter
+                </div>
+              )}
                 </div>
 
                 <div className="mb-3">
@@ -81,7 +88,7 @@ export default function OrderForm() {
                   </label>
                   <input
                     type="text"
-                    className={`form-control ${error ? "is-invalid" : ""}`}
+                    className={`form-control ${errorPhone ? "is-invalid" : ""}`}
                     id="phone"
                     name="phone"
                     placeholder="Enter phone number"
@@ -89,9 +96,9 @@ export default function OrderForm() {
                     onChange={handleChange}
                     required
                   />
-                  {error && (
+                  {errorPhone && (
                 <div className="invalid-feedback">
-                  Mobile Number should start with number between 6-9 and should contain exactly 10 digits
+                  Phone number should start with 6-9 and be exactly 10 digits
                 </div>
               )}
                 </div>
