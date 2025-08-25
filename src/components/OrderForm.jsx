@@ -10,16 +10,6 @@ export default function OrderForm() {
   const [orderId, setOrderId] = useState(0);
 
   useEffect(() => {
-<<<<<<< HEAD
-    api.get("/api/staff/waiters/available")
-    .then(res => {
-      console.log(res.data.data);
-      setWaiters(res.data.data);
-    })
-    .catch(err => {
-      console.error("Error fetching waiters:", err);
-      setWaiters([]);})
-=======
     api
       .get("/api/staff/waiters/available")
       .then((res) => {
@@ -30,7 +20,6 @@ export default function OrderForm() {
         console.error("Error fetching waiters:", err);
         setWaiters([]);
       });
->>>>>>> 310a9fe06ea7314d1597061e028af52c7b010aba
   }, []);
 
   const handleChange = (e) => {

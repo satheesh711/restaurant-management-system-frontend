@@ -6,16 +6,9 @@ export default function FoodSelection({ id }) {
   const [selectedItems, setSelectedItems] = useState({});
 
   useEffect(() => {
-<<<<<<< HEAD
-    axios
-      .get("http://localhost:8081/api/staff/items/all")
-    api
-      .get("/api/staff/items/all")
-=======
     
     api
       .get("/api/staff/items/availableItems")
->>>>>>> 310a9fe06ea7314d1597061e028af52c7b010aba
       .then((res) => {
         if (res.data.success) {
           setItems(res.data.data);
