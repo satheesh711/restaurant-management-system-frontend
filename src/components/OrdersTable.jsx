@@ -4,7 +4,7 @@ import api from "../config/axiosConfig";
 
 export default function OrdersTable() {
   const [orders, setOrders] = useState([]);
-  const [statuses] = useState(["Pending", "Cancelled", "Completed"]);
+  const [statuses] = useState(["PENDING", "CANCELLED", "COMPLETED"]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
@@ -38,7 +38,7 @@ export default function OrdersTable() {
 
   const getAvailableStatuses = (currentStatus) => {
     if (currentStatus === "PENDING") {
-      return statuses.filter((s) => s !== "Pending");
+      return statuses.filter((s) => s !== "PENDING");
     }
     return [];
   };
