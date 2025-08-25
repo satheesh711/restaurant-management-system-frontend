@@ -54,7 +54,6 @@ export default function FoodSelection({ name, phone, waiterId }) {
     });
   };
 
-  // Step 1: Move to Review screen
   const handleFirstConfirm = async () => {
     if (Object.keys(selectedItems).length === 0) {
       Swal.fire("Oops!", "Select at least 1 item", "warning");
@@ -62,7 +61,6 @@ export default function FoodSelection({ name, phone, waiterId }) {
     }
 
     try {
-      // create order first (to get orderId)
       const response = await api.post("/api/staff/orders/addOrder", {
         name,
         phone,
@@ -77,7 +75,6 @@ export default function FoodSelection({ name, phone, waiterId }) {
     }
   };
 
-  // Step 2: Final confirm → add items + update amount
   const handleFinalConfirm = async () => {
     try {
       const payload = getPayload(orderId);
