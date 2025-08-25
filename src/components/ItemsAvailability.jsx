@@ -10,7 +10,6 @@ function ItemsManagement() {
     try {
       const res = await api.get("/api/staff/items/all");
       if (res.data.success) {
-        console.log(res.data.data);
         setItems(res.data.data);
       } else {
         alert("Failed to fetch items");
@@ -58,7 +57,6 @@ function ItemsManagement() {
 
       <div className="row">
         {items.map((item) => {
-          console.log(item.url);
           return (
             <div key={item.id} className="col-md-4 mb-4">
               <div className="card h-100 shadow">

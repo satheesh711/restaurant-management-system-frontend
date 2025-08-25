@@ -28,7 +28,7 @@ export function LoginForm() {
       if (localStorage.getItem("token")) {
         const role = localStorage.getItem("role");
         if (role === "ROLE_ADMIN") {
-          navigate("/admin/employee-management");
+          navigate("/admin");
         } else if (role === "ROLE_STAFF") {
           navigate("/staff");
         } else {

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import FoodSelection from "./FoodSelection";
 import api from "../config/axiosConfig";
 
@@ -11,7 +10,7 @@ export default function OrderForm() {
   const [orderId, setOrderId] = useState(0);
   useEffect(() => {
     api
-      .get("http://localhost:8080/api/staff/waiters/available")
+      .get("/api/staff/waiters/available")
       .then((res) => {
         console.log(res.data.data);
         setWaiters(res.data.data);
@@ -30,14 +29,11 @@ export default function OrderForm() {
     e.preventDefault();
     try {
       console.log(formData.name, formData.phone, selectedWaiter);
-      const response = await axios.post(
-        "http://localhost:8080/api/staff/orders/addOrder",
-        {
-          name: formData.name,
-          phone: formData.phone,
-          waiterId: selectedWaiter,
-        }
-      );
+      const response = await api.post("/api/staff/orders/addOrder", {
+        name: formData.name,
+        phone: formData.phone,
+        waiterId: selectedWaiter,
+      });
       console.log("Order created:", response.data);
       const orderId = response.data.data;
       setOrderId(orderId);

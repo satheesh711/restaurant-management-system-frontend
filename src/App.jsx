@@ -77,7 +77,7 @@ export default function App() {
           index: true,
           element: (
             <PrivateRoute roles={["ROLE_STAFF"]}>
-              <Dashboard />
+              <h1>Hi</h1>
             </PrivateRoute>
           ),
         },
@@ -102,52 +102,4 @@ export default function App() {
   ]);
 
   return <RouterProvider router={appRouter} />;
-
-  // <Router>
-  //   <Routes>
-  //     <Route path="/" element={<Landing />} />
-  //     <Route
-  //       path="/login"
-  //       element={
-  //         <LoginLayout
-  //           title="Welcome back"
-  //           subtitle="Login in to your account to continue"
-  //         >
-  //           <LoginForm />
-  //         </LoginLayout>
-  //       }
-  //     />
-
-  //     <Route
-  //       path="/dashboard"
-  //       element={
-  //         <PrivateRoute roles={["ROLE_STAFF", "ROLE_ADMIN"]}>
-  //           {/* <Dashboard /> */}
-  //         </PrivateRoute>
-  //       }
-  //     />
-
-  //     <Route
-  //       path="/admin"
-  //       element={
-  //         <PrivateRoute roles={["ROLE_ADMIN"]}>
-  //           {/* <AdminPage /> */}
-  //         </PrivateRoute>
-  //       }
-  //     />
-
-  //     <Route
-  //       path="/employee-management"
-  //       element={
-  //         <PrivateRoute roles={["ROLE_ADMIN"]}>
-  //           <Employee />
-  //         </PrivateRoute>
-  //       }
-  //     />
-
-  //     <Route path="/unauthorized" element={<h1>403 Unauthorized </h1>} />
-  //     <Route path="*" element={<Navigate to="/login" />} />
-  //   </Routes>
-  // </Router>
-  // );
 }
