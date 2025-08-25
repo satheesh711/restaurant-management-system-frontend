@@ -65,7 +65,6 @@ export default function FoodSelection({ id }) {
     }
   };
 
-
   return (
     <div className="container mt-4">
       <h2 className="mb-4 text-center">Select Food Items</h2>

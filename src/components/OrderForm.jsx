@@ -10,7 +10,6 @@ export default function OrderForm() {
   const [orderId, setOrderId] = useState(0);
 
   useEffect(() => {
-
     api.get("/api/staff/waiters/available")
     .then(res => {
       console.log(res.data.data);
