@@ -72,10 +72,11 @@ export default function App() {
           }
         />
 
+        <Route path="/items" element={<ItemsManagement />} />
+
         <Route path="/unauthorized" element={<h1>403 Unauthorized </h1>} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );
 }
-
