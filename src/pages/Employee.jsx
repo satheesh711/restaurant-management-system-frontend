@@ -312,7 +312,6 @@ function Employee() {
                   required
                 >
                   <option value="">Select Designation</option>
-                  <option value="ADMIN">Admin</option>
                   <option value="STAFF">Staff</option>
                   <option value="WAITER">Waiter</option>
                 </select>
