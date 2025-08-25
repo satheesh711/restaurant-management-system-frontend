@@ -8,7 +8,7 @@ function ItemsManagement() {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:8081/api/staff/items/all");
+      const res = await axios.get("http://localhost:8080/api/staff/items/all");
       if (res.data.success) {
         setItems(res.data.data);
       } else {
@@ -25,16 +25,13 @@ function ItemsManagement() {
   useEffect(() => {
     fetchItems();
   }, []);
-
-  // Toggle availability
   const handleToggle = async (id) => {
     try {
       const res = await axios.post(
-        `http://localhost:8081/api/staff/items/availability/${id}`
+        `http://localhost:8080/api/staff/items/availability/${id}`
       );
       if (res.data.success) {
         alert("Availability updated!");
-        // update local state
         setItems((prev) =>
           prev.map((item) =>
             item.id === id
@@ -56,13 +53,12 @@ function ItemsManagement() {
       <h2 className="mb-4 text-center">Items Management</h2>
 
       {loading && <p className="text-center">Loading...</p>}
-
       <div className="row">
         {items.map((item) => (
           <div key={item.id} className="col-md-4 mb-4">
             <div className="card h-100 shadow">
               <img
-                src={`http://localhost:8081${item.imageUrl}`}
+                src={`http://localhost:8080${item.imageUrl}`}
                 className="card-img-top"
                 alt={item.name}
                 style={{ height: "200px", objectFit: "cover" }}

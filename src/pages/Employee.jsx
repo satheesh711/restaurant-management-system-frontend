@@ -3,7 +3,7 @@ import api from "../config/axiosConfig";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/reset.css";
 import "../assets/Employee.css";
-import { message } from "antd";
+import Swal from "sweetalert2";
 
 function Employee() {
   const [employees, setEmployees] = useState([]);
@@ -28,8 +28,9 @@ function Employee() {
           res.data.data.sort((a, b) => a.status.localeCompare(b.status))
         );
       }
-    } catch (err) {
-      message.error("Failed to fetch employees", err);
+    } catch (error) {
+      console.log(error);
+      Swal.fire("Failed!", "Failed to fetch Employees", "error");
     } finally {
       setLoading(false);
     }
@@ -67,31 +68,56 @@ function Employee() {
     };
     try {
       if (editingEmployee) {
+        console.log("Updating employee:", editingEmployee.empId, payload);
         const res = await api.put(
           `/api/admin/employees/update/${editingEmployee.empId}`,
           payload
         );
-        message.success(res.data.message || "Employee updated successfully");
+        console.log(res);
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "Employee Updated Successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
         const res = await api.post("/api/admin/employees/add", payload);
-        message.success(res.data.message || "Employee added successfully");
+
+        console.log(res);
+        Swal.fire({
+          icon: "success",
+          title: "Added!",
+          text: "Employee Added Successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       }
       setIsModalOpen(false);
       setEditingEmployee(null);
       resetForm();
       fetchEmployees();
     } catch (err) {
-      message.error(err.response?.data?.message || "Something went wrong");
+      console.log(err);
+      Swal.fire("Error!", "Something went wrong", "error");
     }
   };
 
   const handleDelete = async (id) => {
     try {
       const res = await api.delete(`/api/admin/employees/delete/${id}`);
-      message.success(res.data.message || "Employee deleted successfully");
+      console.log(res);
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Employee Deleted  Successfully.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       fetchEmployees();
     } catch (err) {
-      message.error(err.response?.data?.message || "Failed to delete employee");
+      console.log(err);
+      Swal.fire("Failed!", "Failed to Deelet employee", "error");
     }
   };
 
