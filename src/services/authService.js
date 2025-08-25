@@ -1,5 +1,4 @@
-import axios from "axios"
-import api from "../config/axiosConfig"
+import api from "../config/axiosConfig";
 
 export const login = async (userDetails) => {
    try {
