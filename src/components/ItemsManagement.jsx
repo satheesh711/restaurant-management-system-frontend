@@ -25,8 +25,6 @@ function ItemsManagement() {
   useEffect(() => {
     fetchItems();
   }, []);
-
-  // Toggle availability
   const handleToggle = async (id) => {
     try {
       const res = await axios.post(
@@ -34,7 +32,6 @@ function ItemsManagement() {
       );
       if (res.data.success) {
         alert("Availability updated!");
-        // update local state
         setItems((prev) =>
           prev.map((item) =>
             item.id === id
@@ -56,7 +53,6 @@ function ItemsManagement() {
       <h2 className="mb-4 text-center">Items Management</h2>
 
       {loading && <p className="text-center">Loading...</p>}
-
       <div className="row">
         {items.map((item) => (
           <div key={item.id} className="col-md-4 mb-4">
