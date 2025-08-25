@@ -8,7 +8,7 @@ export default function FoodSelection({id}) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/staff/items/all")
+      .get("http://localhost:8081/api/staff/items/all")
       .then((res) => {
         if (res.data.success) {
         setItems(res.data.data);
@@ -59,13 +59,13 @@ export default function FoodSelection({id}) {
 });
   console.log(payload);
   try {
-    await axios.post("http://localhost:8080/api/staff/order-details", payload, {
+    await axios.post("http://localhost:8081/api/staff/order-details", payload, {
       headers: { "Content-Type": "application/json" }
     })
     console.log("Items added successfully");
 
     await axios.put(
-      `http://localhost:8080/api/staff/orders/updateAmount/${id}`,
+      `http://localhost:8081/api/staff/orders/updateAmount/${id}`,
       null,
       { headers: { "Content-Type": "application/json" } }
     );

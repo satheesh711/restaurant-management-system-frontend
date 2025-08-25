@@ -8,7 +8,7 @@ import { Item } from "./components/Item";
 import Dashboard from "./pages/Dashboard";
 import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
-// import ItemsManagement from "./components/ItemsAvailability";
+import ItemsManagement from "./components/ItemsAvailability";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -100,6 +100,5 @@ export default function App() {
       ],
     },
   ]);
-
   return <RouterProvider router={appRouter} />;
 }

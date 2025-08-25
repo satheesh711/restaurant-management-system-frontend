@@ -10,7 +10,7 @@ export default function OrderForm() {
   const [isSubmited, setIsSubmited] = useState(false);
   const [orderId, setOrderId] = useState(0)
   useEffect(() => {
-    axios.get("http://localhost:8080/api/staff/waiters/available")
+    axios.get("http://localhost:8081/api/staff/waiters/available")
     .then(res => {
       console.log(res.data.data);
       setWaiters(res.data.data);
@@ -28,7 +28,7 @@ export default function OrderForm() {
     e.preventDefault();
     try {
       console.log(formData.name, formData.phone, selectedWaiter);
-      const response = await axios.post("http://localhost:8080/api/staff/orders/addOrder", {
+      const response = await axios.post("http://localhost:8081/api/staff/orders/addOrder", {
         name: formData.name,
         phone: formData.phone,
         waiterId: selectedWaiter
