@@ -7,7 +7,6 @@ export default function OrderForm() {
   const [waiters, setWaiters] = useState([]);
   const [selectedWaiter, setSelectedWaiter] = useState("");
   const [isSubmited, setIsSubmited] = useState(false);
-  const [orderId, setOrderId] = useState(0);
 
   useEffect(() => {
     api
@@ -28,90 +27,20 @@ export default function OrderForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-<<<<<<< HEAD
-    console.log(formData.name, formData.phone, selectedWaiter);
-    const response = await api.post("/api/staff/orders/addOrder", {
-      name: formData.name,
-      phone: formData.phone,
-      waiterId: selectedWaiter,
-    });
-    console.log("Order created:", response.data);
-    const orderId = response.data.data;
-    setOrderId(orderId);
     setIsSubmited(true);
-  } catch (error) {
-    console.error("Error:", error.response?.data || error.message);
-  }
-};
-=======
-      const response = await api.post("/api/staff/orders/addOrder", {
-        name: formData.name,
-        phone: formData.phone,
-        waiterId: selectedWaiter,
-      });
-      const orderId = response.data.data;
-      setOrderId(orderId);
-      setIsSubmited(true);
-    } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
-    }
   };
->>>>>>> 310a9fe06ea7314d1597061e028af52c7b010aba
 
   if (isSubmited) {
-    return <FoodSelection id={orderId} />;
+    return (
+      <FoodSelection
+        name={formData.name}
+        phone={formData.phone}
+        waiterId={selectedWaiter}
+      />
+    );
   }
 
   return (
-<<<<<<< HEAD
-    <>
-      {!isSubmited && (
-        <div>
-          <h2>Orders</h2>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="name">Customer Name: </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="Name"
-              onChange={handleChange}
-              required
-            />
-            <br />
-            <label htmlFor="name">Customer Phone Number: </label>
-            <input
-              type="text"
-              id="phone"
-              name="phone"
-              placeholder="Phone Number"
-              onChange={handleChange}
-              required
-            />
-            <br />
-            <label htmlFor="waiter">Select Waiter: </label>
-            <select
-              id="waiter"
-              value={selectedWaiter}
-              onChange={(e) => setSelectedWaiter(e.target.value)}
-              required
-            >
-              <option value="">Waiters</option>
-              {waiters.map((waiter) => (
-                <option key={waiter.waiterId} value={waiter.waiterId}>
-                  {waiter.name}
-                </option>
-              ))}
-            </select>
-            <br />
-            <button type="submit">Next</button>
-          </form>
-        </div>
-      )}
-      {isSubmited && <FoodSelection id={orderId} />}
-    </>
-=======
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
@@ -180,6 +109,5 @@ export default function OrderForm() {
         </div>
       </div>
     </div>
->>>>>>> 310a9fe06ea7314d1597061e028af52c7b010aba
   );
 }

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../config/axiosConfig";
 
-export default function FoodSelection({ id }) {
+export default function FoodSelection({ name, phone, waiterId }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
+  const [orderId, setOrderId] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    
     api
       .get("/api/staff/items/availableItems")
       .then((res) => {
@@ -39,60 +41,48 @@ export default function FoodSelection({ id }) {
   };
 
   const handleConfirm = async () => {
-    const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
-<<<<<<< HEAD
-  const item = items.find((i) => i.id === parseInt(itemId));
-  return {
-    orderId: id,   
-    itemId: parseInt(itemId),
-    quantity: qty,
-    price: item.price
-  };
-});
-  console.log(payload);
-  try {
-    await api.post("/api/staff/order-details", payload, {
-      headers: { "Content-Type": "application/json" }
-    })
-    console.log("Items added successfully");
-await api.put(
-  `/api/staff/orders/updateAmount/${id}`,
-  null,
-  { headers: { "Content-Type": "application/json" } }
-);
-console.log("Amount updated successfully");
-  } catch (err) {
-    console.error("Error:", err.response?.data || err.message);
-  }
-};
-    
-=======
-      const item = items.find((i) => i.id === parseInt(itemId));
-      return {
-        orderId: id,
-        itemId: parseInt(itemId),
-        quantity: qty,
-        price: item.price,
-      };
-    });
-
-    console.log(payload);
     try {
-      await api.post("/api/staff/order-details", payload, {
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log("Items added successfully");
+      if (Object.keys(selectedItems).length === 0) {
+        alert("Select atleast 1 item");
+      } else {
+        const response = await api.post("/api/staff/orders/addOrder", {
+          name: name,
+          phone: phone,
+          waiterId: waiterId,
+        });
+        const id = response.data.data;
+        console.log(id);
+        setOrderId(id);
+        console.log(orderId);
 
-      await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
-        headers: { "Content-Type": "application/json" },
-      });
-      console.log("Amount updated successfully");
+        const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
+          const item = items.find((i) => i.id === parseInt(itemId));
+          console.log(item);
+          return {
+            orderId: id,
+            itemId: parseInt(itemId),
+            quantity: qty,
+            price: item.price,
+          };
+        });
+
+        console.log(payload);
+        await api.post("/api/staff/order-details", payload, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log("Items added successfully");
+
+        await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log("Amount updated successfully");
+        navigate("/staff/order-management");
+      }
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
     }
   };
 
->>>>>>> 310a9fe06ea7314d1597061e028af52c7b010aba
   return (
     <div className="container mt-4">
       <h2 className="mb-4 text-center">Select Food Items</h2>
