@@ -1,0 +1,45 @@
+import api from "../config/axiosConfig";
+
+export const getItems = async () => {
+  const res = await api.get("/api/staff/items/all");
+  return res.data.data || [];  
+};
+
+export const deleteItem = async (id) => {
+  const res = await api.delete(`/api/staff/items/delete/${id}`);
+  return res.data; 
+};
+
+export const addItem = async (item) => {
+  const res = await api.post("/api/staff/items/addItem", item);
+  return res.data;  
+};
+
+export const uploadImage = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);   
+
+    const res = await api.post("/api/staff/items/itemImage", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return res.data.data;
+  } catch (error) {
+    console.error("Upload failed:", error);
+    throw error;
+  }
+};
+
+
+export const updateItem = async (id, item) => {
+  const res = await api.post(`/api/staff/items/updateItem/${id}`, item);
+  return res.data;
+};
+
+export const getCategories = async () => {
+  const res = await api.get(`/api/staff/items/categories`);
+  return res.data.data || []; 
+};

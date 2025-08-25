@@ -11,10 +11,10 @@ const Landing = () => {
 
     return (
         <div>
-            <Navbar homeRef={homeRef} aboutRef={aboutRef}  footerRef={footerRef} />
-            <HeroSection homeRef={homeRef} />
+            <Navbar />
+            {/* <HeroSection homeRef={homeRef} />
             <About aboutRef={ aboutRef }/>
-            <Footer footerRef={footerRef} />
+            <Footer footerRef={footerRef} /> */}
         </div>
     );
 };

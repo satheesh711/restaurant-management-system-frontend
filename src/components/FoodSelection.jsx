@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import api from "../config/axiosConfig";
 
 export default function FoodSelection({id}) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/staff/items/all")
+    api
+      .get("/api/staff/items/all")
       .then((res) => {
         if (res.data.success) {
         setItems(res.data.data);
@@ -59,13 +60,13 @@ export default function FoodSelection({id}) {
 });
   console.log(payload);
   try {
-    await axios.post("http://localhost:8080/api/staff/order-details", payload, {
+    await api.post("/api/staff/order-details", payload, {
       headers: { "Content-Type": "application/json" }
     })
     console.log("Items added successfully");
 
-    await axios.put(
-      `http://localhost:8080/api/staff/orders/updateAmount/${id}`,
+    await api.put(
+      `/api/staff/orders/updateAmount/${id}`,
       null,
       { headers: { "Content-Type": "application/json" } }
     );
