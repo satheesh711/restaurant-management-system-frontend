@@ -31,11 +31,16 @@ export default function AdminDashboard() {
         <div className="bg-light border-end p-3" style={{ width: "220px" }}>
           <h5 className="fw-bold mb-4">Menu</h5>
           <ul className="nav flex-column gap-2">
-            <li className="nav-item">
+            {isAdmin && <li className="nav-item">
               <Link className="nav-link text-dark" to="/admin">
                 Dashboard
               </Link>
-            </li>
+            </li>}
+            {isStaff && <li className="nav-item">
+              <Link className="nav-link text-dark" to="/staff">
+                Pending Orders
+              </Link>
+            </li>}
             {isAdmin && (
               <li className="nav-item">
                 <Link className="nav-link text-dark" to="/admin/employee-management">
