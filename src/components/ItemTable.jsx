@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-function TableTemplate({ columns, data, onEdit, onDelete, itemsPerPage = 10 }) {
-  const [currentPage, setCurrentPage] = useState(1);
+function ItemTable({ columns, data, onEdit, onDelete, itemsPerPage = 5,currentPage, setCurrentPage  }) {
+
 
   const indexOfLast = currentPage * itemsPerPage;
   const indexOfFirst = indexOfLast - itemsPerPage;
@@ -23,6 +23,7 @@ function TableTemplate({ columns, data, onEdit, onDelete, itemsPerPage = 10 }) {
         <thead className="table-dark">
           <tr>
             <th>#</th>
+            <th>Image</th>
             {columns.map((col) => (
               <th key={col.key}>{col.label}</th>
             ))}
@@ -34,6 +35,8 @@ function TableTemplate({ columns, data, onEdit, onDelete, itemsPerPage = 10 }) {
             currentItems.map((row, index) => (
               <tr key={row.id || index}>
                 <td>{indexOfFirst + index + 1}</td>
+                <td><img src={row.imageUrl} alt={row.imageUrl}  width={50} /></td>
+
                 {columns.map((col) => (
                   <td key={col.key}>{row[col.key]}</td>
                 ))}
@@ -97,4 +100,4 @@ function TableTemplate({ columns, data, onEdit, onDelete, itemsPerPage = 10 }) {
   );
 }
 
-export default TableTemplate;
+export default ItemTable;
