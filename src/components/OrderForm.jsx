@@ -7,7 +7,6 @@ export default function OrderForm() {
   const [waiters, setWaiters] = useState([]);
   const [selectedWaiter, setSelectedWaiter] = useState("");
   const [isSubmited, setIsSubmited] = useState(false);
-  const [orderId, setOrderId] = useState(0);
 
   useEffect(() => {
     api
@@ -28,22 +27,17 @@ export default function OrderForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await api.post("/api/staff/orders/addOrder", {
-        name: formData.name,
-        phone: formData.phone,
-        waiterId: selectedWaiter,
-      });
-      const orderId = response.data.data;
-      setOrderId(orderId);
-      setIsSubmited(true);
-    } catch (error) {
-      console.error("Error:", error.response?.data || error.message);
-    }
+    setIsSubmited(true);
   };
 
   if (isSubmited) {
-    return <FoodSelection id={orderId} />;
+    return (
+      <FoodSelection
+        name={formData.name}
+        phone={formData.phone}
+        waiterId={selectedWaiter}
+      />
+    );
   }
 
   return (
