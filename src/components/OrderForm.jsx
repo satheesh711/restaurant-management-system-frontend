@@ -7,6 +7,7 @@ export default function OrderForm() {
   const [waiters, setWaiters] = useState([]);
   const [selectedWaiter, setSelectedWaiter] = useState("");
   const [isSubmited, setIsSubmited] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     api
@@ -22,11 +23,21 @@ export default function OrderForm() {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    let value = e.target.value;
+
+  if (e.target.name === "phone") {
+    value = value.replace(/\D/g, "").substring(0, 10);
+    setError(!/^[6-9]\d{9}$/.test(value));
+  } else if (e.target.name === "name") {
+    value = value.replace(/[^a-zA-Z ]/g, "");
+  }
+
+  setFormData({ ...formData, [e.target.name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (error || !formData.name || !selectedWaiter) return;
     setIsSubmited(true);
   };
 
@@ -70,7 +81,7 @@ export default function OrderForm() {
                   </label>
                   <input
                     type="text"
-                    className="form-control"
+                    className={`form-control ${error ? "is-invalid" : ""}`}
                     id="phone"
                     name="phone"
                     placeholder="Enter phone number"
@@ -78,6 +89,11 @@ export default function OrderForm() {
                     onChange={handleChange}
                     required
                   />
+                  {error && (
+                <div className="invalid-feedback">
+                  Mobile Number should start with number between 6-9 and should contain exactly 10 digits
+                </div>
+              )}
                 </div>
 
                 <div className="mb-3">

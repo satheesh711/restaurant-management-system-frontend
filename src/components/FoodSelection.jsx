@@ -41,7 +41,11 @@ export default function FoodSelection({ name, phone, waiterId }) {
   };
 
   const handleFirstConfirm = () => {
+    if (Object.keys(selectedItems).length === 0) {
+        alert("Select atleast 1 item");
+      } else {
     setReviewMode(true);
+      }
   };
 
   const getPayloadForReview = () => {
@@ -59,9 +63,9 @@ export default function FoodSelection({ name, phone, waiterId }) {
 
   const handleFinalConfirm = async () => {
     try {
-      if (Object.keys(selectedItems).length === 0) {
-        alert("Select atleast 1 item");
-      } else {
+      // if (Object.keys(selectedItems).length === 0) {
+      //   alert("Select atleast 1 item");
+      // } else {
         const response = await api.post("/api/staff/orders/addOrder", {
           name: name,
           phone: phone,
@@ -102,7 +106,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
 
         setSelectedItems({});
         setReviewMode(false);
-      }
+      // }
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
       Swal.fire({
