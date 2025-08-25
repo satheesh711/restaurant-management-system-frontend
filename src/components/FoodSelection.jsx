@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import api from "../config/axiosConfig";
 
 export default function FoodSelection({id}) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/staff/items/all")
+    api
+      .get("/api/staff/items/all")
       .then((res) => {
         if (res.data.success) {
         setItems(res.data.data);
