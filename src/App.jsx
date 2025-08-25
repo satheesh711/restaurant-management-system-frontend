@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
 import ItemsManagement from "./components/ItemsAvailability";
+import OrdersTable from "./components/OrdersTable";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -97,9 +98,16 @@ export default function App() {
             </PrivateRoute>
           ),
         },
+        {
+          path: "order-management",
+          element: (
+            <PrivateRoute roles={["ROLE_STAFF"]}>
+              <OrdersTable />
+            </PrivateRoute>
+          ),
+        },
       ],
     },
   ]);
-
   return <RouterProvider router={appRouter} />;
 }

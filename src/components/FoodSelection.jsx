@@ -1,119 +1,130 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useLocation } from "react-router-dom";
 import api from "../config/axiosConfig";
 
-export default function FoodSelection({id}) {
+export default function FoodSelection({ id }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
 
   useEffect(() => {
+    
     api
-      .get("/api/staff/items/all")
+      .get("/api/staff/items/availableItems")
       .then((res) => {
         if (res.data.success) {
-        setItems(res.data.data);
-      } else {
-        console.error("Failed to fetch items:", res.data.message);
-      }
+          setItems(res.data.data);
+        } else {
+          console.error("Failed to fetch items:", res.data.message);
+        }
       })
       .catch((err) => console.error("Error fetching items:", err));
   }, []);
 
   const handleAdd = (itemId) => {
-    setSelectedItems((prev) => ({
-      ...prev,
-      [itemId]: 1, 
-    }));
+    setSelectedItems((prev) => ({ ...prev, [itemId]: 1 }));
   };
 
   const handleIncrement = (itemId) => {
-    setSelectedItems((prev) => ({
-      ...prev,
-      [itemId]: prev[itemId] + 1,
-    }));
+    setSelectedItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
   };
 
   const handleDecrement = (itemId) => {
     setSelectedItems((prev) => {
       if (prev[itemId] === 1) {
         const newItems = { ...prev };
-        delete newItems[itemId]; 
+        delete newItems[itemId];
         return newItems;
       }
-      return {
-        ...prev,
-        [itemId]: prev[itemId] - 1,
-      };
+      return { ...prev, [itemId]: prev[itemId] - 1 };
     });
   };
 
   const handleConfirm = async () => {
     const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
-  const item = items.find((i) => i.id === parseInt(itemId));
-  return {
-    orderId: id,   
-    itemId: parseInt(itemId),
-    quantity: qty,
-    price: item.price
-  };
-});
-  console.log(payload);
-  try {
-    await api.post("/api/staff/order-details", payload, {
-      headers: { "Content-Type": "application/json" }
-    })
-    console.log("Items added successfully");
+      const item = items.find((i) => i.id === parseInt(itemId));
+      return {
+        orderId: id,
+        itemId: parseInt(itemId),
+        quantity: qty,
+        price: item.price,
+      };
+    });
 
-    await api.put(
-      `/api/staff/orders/updateAmount/${id}`,
-      null,
-      { headers: { "Content-Type": "application/json" } }
-    );
-    console.log("Amount updated successfully");
-  } catch (err) {
-    console.error("Error:", err.response?.data || err.message);
-  }
-};
-    
+    console.log(payload);
+    try {
+      await api.post("/api/staff/order-details", payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Items added successfully");
+
+      await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Amount updated successfully");
+    } catch (err) {
+      console.error("Error:", err.response?.data || err.message);
+    }
+  };
+
+
   return (
-    <div>
-      <h2>Select Food Items</h2>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-        {items.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              width: "30%",
-              boxSizing: "border-box",
-              textAlign: "center",
-            }}
-          >
-            <img
-              src={item.imageUrl}
-              alt={item.name}
-              style={{ width: "100%", height: "300px", objectFit: "cover" }}
-            />
-            <h3>{item.name}</h3>
-            <p>{item.description}</p>
-            <p>₹{item.price}</p>
-            {selectedItems[item.id] ? (
-              <>
-                <button onClick={() => handleDecrement(item.id)}>-</button>
-                <span> {selectedItems[item.id]} </span>
-                <button onClick={() => handleIncrement(item.id)}>+</button>
-              </>
-            ) : (
-              <button onClick={() => handleAdd(item.id)}>Add</button>
-            )}
-          </div>
-        ))}
+    <div className="container mt-4">
+      <h2 className="mb-4 text-center">Select Food Items</h2>
+      <div className="row">
+        {items.map((item) => {
+          const quantity = selectedItems[item.id] || 0;
+          return (
+            <div key={item.id} className="col-md-4 mb-4">
+              <div className="card h-100 shadow">
+                <img
+                  src={item.imageUrl}
+                  className="card-img-top"
+                  alt={item.name}
+                  style={{ height: "200px", objectFit: "cover" }}
+                />
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title">{item.name}</h5>
+                  <p className="card-text">{item.description}</p>
+                  <p className="mb-2">
+                    <strong>Price:</strong> ₹{item.price}
+                  </p>
+
+                  <div className="mt-auto d-flex align-items-center justify-content-between">
+                    {quantity > 0 ? (
+                      <div className="d-flex align-items-center gap-2">
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleDecrement(item.id)}
+                        >
+                          -
+                        </button>
+                        <span>{quantity}</span>
+                        <button
+                          className="btn btn-sm btn-success"
+                          onClick={() => handleIncrement(item.id)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => handleAdd(item.id)}
+                      >
+                        Add
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <button onClick={handleConfirm} style={{ marginTop: "20px" }}>
-        Confirm
-      </button>
+      <div className="text-center mt-3">
+        <button className="btn btn-success" onClick={handleConfirm}>
+          Confirm
+        </button>
+      </div>
     </div>
   );
 }

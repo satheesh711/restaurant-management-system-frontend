@@ -93,7 +93,7 @@ function ItemsManagement() {
                     <div className="form-check form-switch">
                       <input
                         className="form-check-input"
-                        type="checkbox"
+                        type="checkbox".
                         checked={isAvailable}
                         onChange={() => handleToggle(item.id)}
                       />
