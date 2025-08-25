@@ -6,9 +6,16 @@ export default function FoodSelection({ id }) {
   const [selectedItems, setSelectedItems] = useState({});
 
   useEffect(() => {
+<<<<<<< HEAD
+    axios
+      .get("http://localhost:8081/api/staff/items/all")
+    api
+      .get("/api/staff/items/all")
+=======
     
     api
       .get("/api/staff/items/availableItems")
+>>>>>>> 310a9fe06ea7314d1597061e028af52c7b010aba
       .then((res) => {
         if (res.data.success) {
           setItems(res.data.data);
@@ -40,6 +47,33 @@ export default function FoodSelection({ id }) {
 
   const handleConfirm = async () => {
     const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
+<<<<<<< HEAD
+  const item = items.find((i) => i.id === parseInt(itemId));
+  return {
+    orderId: id,   
+    itemId: parseInt(itemId),
+    quantity: qty,
+    price: item.price
+  };
+});
+  console.log(payload);
+  try {
+    await api.post("/api/staff/order-details", payload, {
+      headers: { "Content-Type": "application/json" }
+    })
+    console.log("Items added successfully");
+await api.put(
+  `/api/staff/orders/updateAmount/${id}`,
+  null,
+  { headers: { "Content-Type": "application/json" } }
+);
+console.log("Amount updated successfully");
+  } catch (err) {
+    console.error("Error:", err.response?.data || err.message);
+  }
+};
+    
+=======
       const item = items.find((i) => i.id === parseInt(itemId));
       return {
         orderId: id,
@@ -65,6 +99,7 @@ export default function FoodSelection({ id }) {
     }
   };
 
+>>>>>>> 310a9fe06ea7314d1597061e028af52c7b010aba
   return (
     <div className="container mt-4">
       <h2 className="mb-4 text-center">Select Food Items</h2>

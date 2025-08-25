@@ -24,7 +24,8 @@ export default function OrdersTable() {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await api.put(
-        `/api/staff/orders/updateStatus?orderId=${orderId}&status=${newStatus}`);
+        `/api/staff/orders/updateStatus?orderId=${orderId}&status=${newStatus}`
+      );
       setOrders((prev) =>
         prev.map((order) =>
           order.orderId === orderId ? { ...order, status: newStatus } : order
