@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../config/axiosConfig";
 
 export default function OrdersTable() {
   const [orders, setOrders] = useState([]);
-  const [statuses] = useState(["Pending", "Cancelled", "Completed"]);
+  const [statuses] = useState(["PENDING", "CANCELLED", "COMPLETED"]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [filterStatus, setFilterStatus] = useState("");
+  const [filterDate, setFilterDate] = useState("");
+
   const itemsPerPage = 7;
 
   useEffect(() => {
@@ -38,27 +40,65 @@ export default function OrdersTable() {
 
   const getAvailableStatuses = (currentStatus) => {
     if (currentStatus === "PENDING") {
-      return statuses.filter((s) => s !== "Pending");
+      return statuses.filter((s) => s !== "PENDING");
     }
     return [];
   };
 
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentOrders = orders.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(orders.length / itemsPerPage);
+
+  // const filteredOrders = filterStatus
+  // ? orders.filter((order) => order.status === filterStatus)
+  // : orders;
+
+  const filteredOrders = orders
+  .filter(order => !filterStatus || order.status === filterStatus)
+  .filter(order => !filterDate || order.orderDate.startsWith(filterDate));
+
+
+const indexOfLast = currentPage * itemsPerPage;
+const indexOfFirst = indexOfLast - itemsPerPage;
+const currentOrders = filteredOrders.slice(indexOfFirst, indexOfLast);
+const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+
 
   return (
     <div className="container mt-4">
       <h2 className="mb-3">Orders Table</h2>
       <div className="d-flex justify-content-between mb-2">
         <span>
-          Total Records: <strong>{orders.length}</strong>
+          Total Records: <strong>{filteredOrders.length}</strong>
         </span>
+
+ <div className="mb-3 d-flex align-items-center gap-2">
+<label htmlFor="filterDate" className="form-label mb-0">Filter by Date:</label>        
+<input 
+  type="date" 
+  className="form-control w-auto" 
+  value={filterDate} 
+  onChange={(e) => setFilterDate(e.target.value)} 
+/>
+</div>
+
+         <div className="mb-3 d-flex align-items-center gap-2">
+  <label htmlFor="filterStatus" className="form-label mb-0">Filter by Status:</label>
+  <select
+    id="filterStatus"
+    className="form-select w-auto"
+    value={filterStatus}
+    onChange={(e) => setFilterStatus(e.target.value)}
+  >
+    <option value="">All</option>
+    {statuses.map((status) => (
+      <option key={status} value={status}>{status}</option>
+    ))}
+  </select>
+</div>
         <span>
           Page {currentPage} of {totalPages || 1}
         </span>
+        
       </div>
+
 
       <table className="table table-striped">
         <thead className="table-dark">
@@ -74,7 +114,7 @@ export default function OrdersTable() {
         </thead>
         <tbody>
           {currentOrders.length > 0 ? (
-            currentOrders.map((order, index) => {
+            currentOrders.map((order) => {
               const availableStatuses = getAvailableStatuses(order.status);
               return (
                 <tr key={order.orderId}>
@@ -87,7 +127,7 @@ export default function OrdersTable() {
                   <td>
                     {availableStatuses.length > 0 ? (
                       <select
-                        className="form-select form-select-sm"
+                        className="form-select w-auto"
                         onChange={(e) =>
                           handleStatusChange(order.orderId, e.target.value)
                         }
