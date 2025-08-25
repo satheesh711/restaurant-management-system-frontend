@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import api from "../config/axiosConfig";
 
 export default function FoodSelection({ id }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
+  const [reviewMode, setReviewMode] = useState(false);
 
   useEffect(() => {
-    
     api
       .get("/api/staff/items/availableItems")
       .then((res) => {
@@ -38,8 +39,8 @@ export default function FoodSelection({ id }) {
     });
   };
 
-  const handleConfirm = async () => {
-    const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
+  const getPayload = () => {
+    return Object.entries(selectedItems).map(([itemId, qty]) => {
       const item = items.find((i) => i.id === parseInt(itemId));
       return {
         orderId: id,
@@ -48,82 +49,154 @@ export default function FoodSelection({ id }) {
         price: item.price,
       };
     });
+  };
 
-    console.log(payload);
+  const handleFirstConfirm = () => {
+    setReviewMode(true);
+  };
+
+  const handleFinalConfirm = async () => {
+    const payload = getPayload();
+
     try {
       await api.post("/api/staff/order-details", payload, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("Items added successfully");
 
       await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("Amount updated successfully");
+
+      Swal.fire({
+        icon: "success",
+        title: "Order Placed Successfully!",
+        text: "Your food order has been confirmed.",
+        confirmButtonColor: "#3085d6",
+      });
+
+      setSelectedItems({});
+      setReviewMode(false);
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Failed!",
+        text: "Something went wrong while placing the order.",
+      });
     }
   };
 
+  const totalAmount = getPayload().reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
   return (
     <div className="container mt-4">
-      <h2 className="mb-4 text-center">Select Food Items</h2>
-      <div className="row">
-        {items.map((item) => {
-          const quantity = selectedItems[item.id] || 0;
-          return (
-            <div key={item.id} className="col-md-4 mb-4">
-              <div className="card h-100 shadow">
-                <img
-                  src={item.imageUrl}
-                  className="card-img-top"
-                  alt={item.name}
-                  style={{ height: "200px", objectFit: "cover" }}
-                />
-                <div className="card-body d-flex flex-column">
-                  <h5 className="card-title">{item.name}</h5>
-                  <p className="card-text">{item.description}</p>
-                  <p className="mb-2">
-                    <strong>Price:</strong> ₹{item.price}
-                  </p>
+      {!reviewMode ? (
+        <>
+          <h2 className="mb-4 text-center">Select Food Items</h2>
+          <div className="row">
+            {items.map((item) => {
+              const quantity = selectedItems[item.id] || 0;
+              return (
+                <div key={item.id} className="col-md-4 mb-4">
+                  <div className="card h-100 shadow">
+                    <img
+                      src={item.imageUrl}
+                      className="card-img-top"
+                      alt={item.name}
+                      style={{ height: "200px", objectFit: "cover" }}
+                    />
+                    <div className="card-body d-flex flex-column">
+                      <h5 className="card-title">{item.name}</h5>
+                      <p className="card-text">{item.description}</p>
+                      <p className="mb-2">
+                        <strong>Price:</strong> ₹{item.price}
+                      </p>
 
-                  <div className="mt-auto d-flex align-items-center justify-content-between">
-                    {quantity > 0 ? (
-                      <div className="d-flex align-items-center gap-2">
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => handleDecrement(item.id)}
-                        >
-                          -
-                        </button>
-                        <span>{quantity}</span>
-                        <button
-                          className="btn btn-sm btn-success"
-                          onClick={() => handleIncrement(item.id)}
-                        >
-                          +
-                        </button>
+                      <div className="mt-auto d-flex align-items-center justify-content-between">
+                        {quantity > 0 ? (
+                          <div className="d-flex align-items-center gap-2">
+                            <button
+                              className="btn btn-sm btn-danger"
+                              onClick={() => handleDecrement(item.id)}
+                            >
+                              -
+                            </button>
+                            <span>{quantity}</span>
+                            <button
+                              className="btn btn-sm btn-success"
+                              onClick={() => handleIncrement(item.id)}
+                            >
+                              +
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => handleAdd(item.id)}
+                          >
+                            Add
+                          </button>
+                        )}
                       </div>
-                    ) : (
-                      <button
-                        className="btn btn-primary btn-sm"
-                        onClick={() => handleAdd(item.id)}
-                      >
-                        Add
-                      </button>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
+              );
+            })}
+          </div>
+          {Object.keys(selectedItems).length > 0 && (
+            <div className="text-center mt-3">
+              <button className="btn btn-success" onClick={handleFirstConfirm}>
+                Proceed
+              </button>
             </div>
-          );
-        })}
-      </div>
-      <div className="text-center mt-3">
-        <button className="btn btn-success" onClick={handleConfirm}>
-          Confirm
-        </button>
-      </div>
+          )}
+        </>
+      ) : (
+        <>
+          <h2 className="mb-4 text-center">Review Your Order</h2>
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price (₹)</th>
+                <th>Subtotal (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {getPayload().map((item) => (
+                <tr key={item.itemId}>
+                  <td>{items.find((i) => i.id === item.itemId)?.name}</td>
+                  <td>{item.quantity}</td>
+                  <td>{item.price}</td>
+                  <td>{item.price * item.quantity}</td>
+                </tr>
+              ))}
+              <tr>
+                <td colSpan="3" className="text-end fw-bold">
+                  Total
+                </td>
+                <td className="fw-bold">₹{totalAmount}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div className="text-center mt-3">
+            <button
+              className="btn btn-secondary me-2"
+              onClick={() => setReviewMode(false)}
+            >
+              Back
+            </button>
+            <button className="btn btn-success" onClick={handleFinalConfirm}>
+              Confirm Order
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

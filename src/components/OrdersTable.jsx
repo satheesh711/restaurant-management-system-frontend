@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../config/axiosConfig";
 
 export default function OrdersTable() {
@@ -74,7 +73,7 @@ export default function OrdersTable() {
         </thead>
         <tbody>
           {currentOrders.length > 0 ? (
-            currentOrders.map((order, index) => {
+            currentOrders.map((order) => {
               const availableStatuses = getAvailableStatuses(order.status);
               return (
                 <tr key={order.orderId}>
