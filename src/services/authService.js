@@ -12,7 +12,6 @@ export const login = async (userDetails) => {
       console.error("Login failed:", error);
    }
 }
-
 export const logout = async () => {
    try{
       const res = await api.post("/auth/logout", {}, { withCredentials: true });

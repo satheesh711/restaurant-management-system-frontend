@@ -32,11 +32,16 @@ function ItemsManagement() {
       const res = await api.post(`/api/staff/items/availability/${id}`);
       if (res.data.success) {
         alert("Availability updated!");
-        // update local state
         setItems((prev) =>
           prev.map((item) =>
             item.id === id
-              ? { ...item, available: res.data.data.available }
+              ? {
+                  ...item,
+                  available:
+                    item.available === "Available"
+                      ? "Unavailable"
+                      : "Available",
+                }
               : item
           )
         );
@@ -57,6 +62,7 @@ function ItemsManagement() {
 
       <div className="row">
         {items.map((item) => {
+          const isAvailable = item.available === "Available";
           return (
             <div key={item.id} className="col-md-4 mb-4">
               <div className="card h-100 shadow">
@@ -76,17 +82,19 @@ function ItemsManagement() {
                     <strong>Category:</strong> {item.category}
                   </p>
 
-                  <div className="mt-auto">
-                    <label className="form-check-label me-2">
-                      {item.available === "AVAILABLE"
-                        ? "Available"
-                        : "Unavailable"}
-                    </label>
-                    <div className="form-check form-switch d-inline-block">
+                  <div className="mt-auto d-flex align-items-center justify-content-between">
+                    <span
+                      className={`fw-bold ${
+                        isAvailable ? "text-success" : "text-danger"
+                      }`}
+                    >
+                      {isAvailable ? "Available" : "Unavailable"}
+                    </span>
+                    <div className="form-check form-switch">
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        checked={item.available === "AVAILABLE"}
+                        checked={isAvailable}
                         onChange={() => handleToggle(item.id)}
                       />
                     </div>
