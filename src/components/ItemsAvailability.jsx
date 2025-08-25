@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../config/axiosConfig";
+import Swal from "sweetalert2";
 
 function ItemsManagement() {
   const [items, setItems] = useState([]);
@@ -12,11 +13,12 @@ function ItemsManagement() {
       if (res.data.success) {
         setItems(res.data.data);
       } else {
-        alert("Failed to fetch items");
+        Swal.fire("Failed!", "Failed to fetch items", "error");
       }
+      
     } catch (error) {
       console.error(error);
-      alert("Error fetching items");
+      Swal.fire("Error!", "Error fetching items", "error");
     } finally {
       setLoading(false);
     }
@@ -26,12 +28,11 @@ function ItemsManagement() {
     fetchItems();
   }, []);
 
-  // Toggle availability
+
   const handleToggle = async (id) => {
     try {
       const res = await api.post(`/api/staff/items/availability/${id}`);
       if (res.data.success) {
-        alert("Availability updated!");
         setItems((prev) =>
           prev.map((item) =>
             item.id === id
@@ -45,12 +46,20 @@ function ItemsManagement() {
               : item
           )
         );
+
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "Item availability updated successfully.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
       } else {
-        alert("Failed to update availability");
+        Swal.fire("Failed!", "Failed to update availability", "error");
       }
     } catch (error) {
       console.error(error);
-      alert("Error updating availability");
+      Swal.fire("Error!", "Error updating availability", "error");
     }
   };
 
