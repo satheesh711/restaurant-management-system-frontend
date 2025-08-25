@@ -10,8 +10,9 @@ import About from "./components/About";
 import AddItemForm from "./components/AddItemForm";
 import { LoginForm } from "./pages/LoginForm";
 import { LoginLayout } from "./components/LoginLayout";
-import Landing from "./pages/Landing";
 import Employee from "./pages/Employee";
+import ItemsManagement from "./components/ItemsManagement";
+import { Home } from "lucide-react";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
