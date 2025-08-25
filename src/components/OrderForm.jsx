@@ -9,16 +9,14 @@ export default function OrderForm() {
   const [isSubmited, setIsSubmited] = useState(false);
   const [orderId, setOrderId] = useState(0);
   useEffect(() => {
-    api
-      .get("/api/staff/waiters/available")
-      .then((res) => {
-        console.log(res.data.data);
-        setWaiters(res.data.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching waiters:", err);
-        setWaiters([]);
-      });
+    api.get("/api/staff/waiters/available")
+    .then(res => {
+      console.log(res.data.data);
+      setWaiters(res.data.data);
+    })
+    .catch(err => {
+      console.error("Error fetching waiters:", err);
+      setWaiters([]);})
   }, []);
 
   const handleChange = (e) => {
