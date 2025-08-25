@@ -2,8 +2,9 @@ import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+export const UserContext=createContext();
+
 const UserProvider = ({ children }) => {
-  const UserContext = createContext();
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 

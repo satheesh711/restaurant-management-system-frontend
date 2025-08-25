@@ -1,12 +1,12 @@
 import "./App.css";
-import About from "./components/About";
-import AddItemForm from "./components/AddItemForm";
 import { LoginForm } from "./pages/LoginForm";
-import { LoginLayout } from "./components/LoginLayout";
 import Landing from "./pages/Landing";
 import Employee from "./pages/Employee";
 import { createBrowserRouter,RouterProvider } from "react-router-dom";
 import UserProvider from "./utilities/UserContext";
+import AdminPage from "./pages/Admin";
+import {Item} from "./components/Item"
+
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -18,8 +18,8 @@ function PrivateRoute({ children, roles }) {
   if (roles && !roles.includes(role)) {
     return <Navigate to="/unauthorized" />;
   }
-
-  return <UserProvider>{children}</UserProvider>;
+  console.log("Hi")
+  return children;
 }
 
 export default function App() {
@@ -31,6 +31,7 @@ export default function App() {
     },
     {
       path: "/admin",
+      element: <UserProvider><AdminPage /></UserProvider>,
       children: [
         {
           path: "employee-management",
@@ -40,14 +41,14 @@ export default function App() {
             </PrivateRoute>
           ),
         },
-        // {
-        //   path: "item-management",
-        //   element: (
-        //     <PrivateRoute roles={["ROLE_ADMIN"]}>
-        //       <Item />
-        //     </PrivateRoute>
-        //   ),
-        // }
+        {
+          path: "item-management",
+          element: (
+            <PrivateRoute roles={["ROLE_ADMIN"]}>
+              <Item />
+            </PrivateRoute>
+          ),
+        }
       ],
     },
     {
