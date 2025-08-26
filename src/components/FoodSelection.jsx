@@ -42,70 +42,69 @@ export default function FoodSelection({ name, phone, waiterId }) {
 
   const handleFirstConfirm = () => {
     if (Object.keys(selectedItems).length === 0) {
-        alert("Select atleast 1 item");
-      } else {
-    setReviewMode(true);
-      }
+      alert("Select atleast 1 item");
+    } else {
+      setReviewMode(true);
+    }
   };
 
   const getPayloadForReview = () => {
-  return Object.entries(selectedItems).map(([itemId, qty]) => {
-    const item = items.find((i) => i.id === parseInt(itemId));
-    return {
-      itemId: parseInt(itemId),
-      quantity: qty,
-      price: item?.price || 0,
-      subtotal: (item?.price || 0) * qty, 
-    };
-  });
-};
-
+    return Object.entries(selectedItems).map(([itemId, qty]) => {
+      const item = items.find((i) => i.id === parseInt(itemId));
+      return {
+        itemId: parseInt(itemId),
+        quantity: qty,
+        price: item?.price || 0,
+        subtotal: (item?.price || 0) * qty,
+      };
+    });
+  };
 
   const handleFinalConfirm = async () => {
     try {
       // if (Object.keys(selectedItems).length === 0) {
       //   alert("Select atleast 1 item");
       // } else {
-        const response = await api.post("/api/staff/orders/addOrder", {
-          name: name,
-          phone: phone,
-          waiterId: waiterId,
-        });
-        const id = response.data.data;
-        console.log(id);
-        setOrderId(id);
-        console.log(orderId);
+      const response = await api.post("/api/staff/orders/addOrder", {
+        name: name,
+        phone: phone,
+        waiterId: waiterId,
+      });
+      const id = response.data.data;
+      console.log(id);
+      setOrderId(id);
+      console.log(orderId);
 
-        const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
-          const item = items.find((i) => i.id === parseInt(itemId));
-          console.log(item);
-          return {
-            orderId: id,
-            itemId: parseInt(itemId),
-            quantity: qty,
-            price: item.price,
-          };
-        });
+      const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
+        const item = items.find((i) => i.id === parseInt(itemId));
+        console.log(item);
+        return {
+          orderId: id,
+          itemId: parseInt(itemId),
+          quantity: qty,
+          price: item.price,
+        };
+      });
 
-        console.log(payload);
-        await api.post("/api/staff/order-details", payload, {
-          headers: { "Content-Type": "application/json" },
-        });
-        console.log("Items added successfully");
+      console.log(payload);
+      await api.post("/api/staff/order-details", payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Items added successfully");
 
-        await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
-          headers: { "Content-Type": "application/json" },
-        });
-        console.log("Amount updated successfully");
-        Swal.fire({
-          icon: "success",
-          title: "Order Placed Successfully!",
-          text: "Your food order has been confirmed.",
-          confirmButtonColor: "#3085d6",
-        });
+      await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("Amount updated successfully");
+      Swal.fire({
+        icon: "success",
+        title: "Order Placed Successfully!",
+        text: "Your food order has been confirmed.",
+        confirmButtonColor: "#3085d6",
+      });
 
-        setSelectedItems({});
-        setReviewMode(false);
+      setSelectedItems({});
+      setReviewMode(false);
       // }
     } catch (err) {
       console.error("Error:", err.response?.data || err.message);
@@ -118,9 +117,9 @@ export default function FoodSelection({ name, phone, waiterId }) {
   };
 
   const totalAmount = getPayloadForReview().reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0
-        );
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   return (
     <div className="container mt-4">

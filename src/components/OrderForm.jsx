@@ -26,15 +26,15 @@ export default function OrderForm() {
   const handleChange = (e) => {
     let value = e.target.value;
 
-  if (e.target.name === "phone") {
-    value = value.replace(/\D/g, "").substring(0, 10);
-    setErrorPhone(!/^[6-9]\d{9}$/.test(value));
-  } else if (e.target.name === "name") {
-    value = value.replace(/[^a-zA-Z ]/g, "");
-    setErrorName(!/[a-zA-Z]+/.test(value));
-  }
+    if (e.target.name === "phone") {
+      value = value.replace(/\D/g, "").substring(0, 10);
+      setErrorPhone(!/^[6-9]\d{9}$/.test(value));
+    } else if (e.target.name === "name") {
+      value = value.replace(/[^a-zA-Z ]/g, "");
+      setErrorName(!/[a-zA-Z]+/.test(value));
+    }
 
-  setFormData({ ...formData, [e.target.name]: value });
+    setFormData({ ...formData, [e.target.name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -76,10 +76,11 @@ export default function OrderForm() {
                     required
                   />
                   {errorName && (
-                <div className="invalid-feedback">
-                  Name should only have letters and spaces, with at least 1 letter
-                </div>
-              )}
+                    <div className="invalid-feedback">
+                      Name should only have letters and spaces, with at least 1
+                      letter
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-3">
@@ -97,10 +98,11 @@ export default function OrderForm() {
                     required
                   />
                   {errorPhone && (
-                <div className="invalid-feedback">
-                  Phone number should start with 6-9 and be exactly 10 digits
-                </div>
-              )}
+                    <div className="invalid-feedback">
+                      Phone number should start with 6-9 and be exactly 10
+                      digits
+                    </div>
+                  )}
                 </div>
 
                 <div className="mb-3">
