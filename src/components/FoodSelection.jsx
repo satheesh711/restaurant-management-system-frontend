@@ -54,15 +54,29 @@ export default function FoodSelection({ name, phone, waiterId }) {
     });
   };
 
-  // Step 1: Move to Review screen
   const handleFirstConfirm = async () => {
     if (Object.keys(selectedItems).length === 0) {
       Swal.fire("Oops!", "Select at least 1 item", "warning");
       return;
     }
+    setReviewMode(true);
+    // try {
+    //   const response = await api.post("/api/staff/orders/addOrder", {
+    //     name,
+    //     phone,
+    //     waiterId,
+    //   });
+    //   const id = response.data.data;
+    //   setOrderId(id);
+    //   setReviewMode(true);
+    // } catch (err) {
+    //   console.error("Error creating order:", err.response?.data || err.message);
+    //   Swal.fire("Error!", "Could not create order", "error");
+    // }
+  };
 
+  const handleFinalConfirm = async () => {
     try {
-      // create order first (to get orderId)
       const response = await api.post("/api/staff/orders/addOrder", {
         name,
         phone,
@@ -70,23 +84,15 @@ export default function FoodSelection({ name, phone, waiterId }) {
       });
       const id = response.data.data;
       setOrderId(id);
-      setReviewMode(true);
-    } catch (err) {
-      console.error("Error creating order:", err.response?.data || err.message);
-      Swal.fire("Error!", "Could not create order", "error");
-    }
-  };
-
-  // Step 2: Final confirm → add items + update amount
-  const handleFinalConfirm = async () => {
-    try {
-      const payload = getPayload(orderId);
+      console.log(id);
+      console.log(orderId);
+      const payload = getPayload(id);
 
       await api.post("/api/staff/order-details", payload, {
         headers: { "Content-Type": "application/json" },
       });
 
-      await api.put(`/api/staff/orders/updateAmount/${orderId}`, null, {
+      await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
         headers: { "Content-Type": "application/json" },
       });
 

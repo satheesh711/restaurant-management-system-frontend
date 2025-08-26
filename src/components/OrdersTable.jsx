@@ -45,21 +45,14 @@ export default function OrdersTable() {
     return [];
   };
 
-
-  // const filteredOrders = filterStatus
-  // ? orders.filter((order) => order.status === filterStatus)
-  // : orders;
-
   const filteredOrders = orders
-  .filter(order => !filterStatus || order.status === filterStatus)
-  .filter(order => !filterDate || order.orderDate.startsWith(filterDate));
+    .filter((order) => !filterStatus || order.status === filterStatus)
+    .filter((order) => !filterDate || order.orderDate.startsWith(filterDate));
 
-
-const indexOfLast = currentPage * itemsPerPage;
-const indexOfFirst = indexOfLast - itemsPerPage;
-const currentOrders = filteredOrders.slice(indexOfFirst, indexOfLast);
-const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
-
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentOrders = filteredOrders.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
 
   return (
     <div className="container mt-4">
@@ -69,36 +62,40 @@ const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
           Total Records: <strong>{filteredOrders.length}</strong>
         </span>
 
- <div className="mb-3 d-flex align-items-center gap-2">
-<label htmlFor="filterDate" className="form-label mb-0">Filter by Date:</label>        
-<input 
-  type="date" 
-  className="form-control w-auto" 
-  value={filterDate} 
-  onChange={(e) => setFilterDate(e.target.value)} 
-/>
-</div>
+        <div className="mb-3 d-flex align-items-center gap-2">
+          <label htmlFor="filterDate" className="form-label mb-0">
+            Filter by Date:
+          </label>
+          <input
+            type="date"
+            className="form-control w-auto"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+          />
+        </div>
 
-         <div className="mb-3 d-flex align-items-center gap-2">
-  <label htmlFor="filterStatus" className="form-label mb-0">Filter by Status:</label>
-  <select
-    id="filterStatus"
-    className="form-select w-auto"
-    value={filterStatus}
-    onChange={(e) => setFilterStatus(e.target.value)}
-  >
-    <option value="">All</option>
-    {statuses.map((status) => (
-      <option key={status} value={status}>{status}</option>
-    ))}
-  </select>
-</div>
+        <div className="mb-3 d-flex align-items-center gap-2">
+          <label htmlFor="filterStatus" className="form-label mb-0">
+            Filter by Status:
+          </label>
+          <select
+            id="filterStatus"
+            className="form-select w-auto"
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            <option value="">All</option>
+            {statuses.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
+          </select>
+        </div>
         <span>
           Page {currentPage} of {totalPages || 1}
         </span>
-        
       </div>
-
 
       <table className="table table-striped">
         <thead className="table-dark">
