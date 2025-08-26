@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
-import api from "../config/axiosConfig";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import api from "../config/axiosConfig";
 
 export default function FoodSelection({ name, phone, waiterId }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
-  const [orderId, setOrderId] = useState(0);
+  const [orderId, setOrderId] = useState(null);
   const [reviewMode, setReviewMode] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api
@@ -40,86 +42,84 @@ export default function FoodSelection({ name, phone, waiterId }) {
     });
   };
 
-  const handleFirstConfirm = () => {
-    if (Object.keys(selectedItems).length === 0) {
-      alert("Select atleast 1 item");
-    } else {
-      setReviewMode(true);
-    }
-  };
-
-  const getPayloadForReview = () => {
+  const getPayload = (id) => {
     return Object.entries(selectedItems).map(([itemId, qty]) => {
       const item = items.find((i) => i.id === parseInt(itemId));
       return {
+        orderId: id,
         itemId: parseInt(itemId),
         quantity: qty,
-        price: item?.price || 0,
-        subtotal: (item?.price || 0) * qty,
+        price: item.price,
       };
     });
   };
 
+  const handleFirstConfirm = async () => {
+    if (Object.keys(selectedItems).length === 0) {
+      Swal.fire("Oops!", "Select at least 1 item", "warning");
+      return;
+    }
+    setReviewMode(true);
+    // try {
+    //   const response = await api.post("/api/staff/orders/addOrder", {
+    //     name,
+    //     phone,
+    //     waiterId,
+    //   });
+    //   const id = response.data.data;
+    //   setOrderId(id);
+    //   setReviewMode(true);
+    // } catch (err) {
+    //   console.error("Error creating order:", err.response?.data || err.message);
+    //   Swal.fire("Error!", "Could not create order", "error");
+    // }
+  };
+
   const handleFinalConfirm = async () => {
     try {
-      // if (Object.keys(selectedItems).length === 0) {
-      //   alert("Select atleast 1 item");
-      // } else {
       const response = await api.post("/api/staff/orders/addOrder", {
-        name: name,
-        phone: phone,
-        waiterId: waiterId,
+        name,
+        phone,
+        waiterId,
       });
       const id = response.data.data;
-      console.log(id);
       setOrderId(id);
+      console.log(id);
       console.log(orderId);
+      const payload = getPayload(id);
 
-      const payload = Object.entries(selectedItems).map(([itemId, qty]) => {
-        const item = items.find((i) => i.id === parseInt(itemId));
-        console.log(item);
-        return {
-          orderId: id,
-          itemId: parseInt(itemId),
-          quantity: qty,
-          price: item.price,
-        };
-      });
-
-      console.log(payload);
       await api.post("/api/staff/order-details", payload, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("Items added successfully");
 
       await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
         headers: { "Content-Type": "application/json" },
       });
-      console.log("Amount updated successfully");
+
       Swal.fire({
         icon: "success",
         title: "Order Placed Successfully!",
         text: "Your food order has been confirmed.",
         confirmButtonColor: "#3085d6",
+      }).then(() => {
+        navigate("/staff/order-management");
       });
-
-      setSelectedItems({});
-      setReviewMode(false);
-      // }
     } catch (err) {
-      console.error("Error:", err.response?.data || err.message);
-      Swal.fire({
-        icon: "error",
-        title: "Failed!",
-        text: "Something went wrong while placing the order.",
-      });
+      console.error("Error placing order:", err.response?.data || err.message);
+      Swal.fire(
+        "Error!",
+        "Something went wrong while placing the order",
+        "error"
+      );
     }
   };
 
-  const totalAmount = getPayloadForReview().reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const totalAmount =
+    orderId &&
+    getPayload(orderId).reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
 
   return (
     <div className="container mt-4">
@@ -177,11 +177,13 @@ export default function FoodSelection({ name, phone, waiterId }) {
               );
             })}
           </div>
-          <div className="text-center mt-3">
-            <button className="btn btn-success" onClick={handleFirstConfirm}>
-              Proceed
-            </button>
-          </div>
+          {Object.keys(selectedItems).length > 0 && (
+            <div className="text-center mt-3">
+              <button className="btn btn-success" onClick={handleFirstConfirm}>
+                Confirm
+              </button>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -196,7 +198,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
               </tr>
             </thead>
             <tbody>
-              {getPayloadForReview().map((item) => (
+              {getPayload(orderId).map((item) => (
                 <tr key={item.itemId}>
                   <td>{items.find((i) => i.id === item.itemId)?.name}</td>
                   <td>{item.quantity}</td>

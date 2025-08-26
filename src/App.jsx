@@ -11,6 +11,7 @@ import OrderForm from "./components/OrderForm";
 import ItemsManagement from "./components/ItemsAvailability";
 import OrdersTable from "./components/OrdersTable";
 import PendingOrders from "./components/PendingOrders";
+import ErrorPage from "./pages/ErrorPage";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -23,7 +24,6 @@ function PrivateRoute({ children, roles }) {
   if (roles && !roles.includes(role)) {
     return <Navigate to="/unauthorized" />;
   }
-  console.log("Hi");
   return children;
 }
 
@@ -32,6 +32,7 @@ export default function App() {
     {
       path: "/",
       element: <LoginForm />,
+      errorElement: <ErrorPage />,
     },
     {
       path: "/admin",
@@ -60,7 +61,7 @@ export default function App() {
         {
           path: "item-management",
           element: (
-            <PrivateRoute roles={["ROLE_ADMIN"]}>
+            <PrivateRoute rol es={["ROLE_ADMIN"]}>
               <Item />
             </PrivateRoute>
           ),
