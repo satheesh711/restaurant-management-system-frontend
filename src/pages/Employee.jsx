@@ -4,10 +4,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/reset.css";
 import "../assets/Employee.css";
 import Swal from "sweetalert2";
+import { useSelector, useDispatch } from "react-redux";
+import { addEmployee, deleteEmployee, updateEmployee } from "../utilities/redux/slices/employeeSlice";
+import { em } from "framer-motion/client";
 
 function Employee() {
-  const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const employees = useSelector((store) => store.employees.employees);
+  const dispatch=useDispatch();
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -18,27 +21,6 @@ function Employee() {
     phone: "",
     designation: "",
   });
-
-  const fetchEmployees = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get("/api/admin/employees");
-      if (res.data.success) {
-        setEmployees(
-          res.data.data.sort((a, b) => a.status.localeCompare(b.status))
-        );
-      }
-    } catch (error) {
-      console.log(error);
-      Swal.fire("Failed!", "Failed to fetch Employees", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
 
   const validateForm = () => {
     let newErrors = {};
@@ -63,17 +45,15 @@ function Employee() {
     if (!validateForm()) return;
     const payload = {
       ...formData,
-      join_date: formData.join_date || null,
-      leaving_date: formData.leaving_date || null,
+      // join_date: formData.join_date || null,
+      // leaving_date: formData.leaving_date || null,
     };
     try {
       if (editingEmployee) {
-        console.log("Updating employee:", editingEmployee.empId, payload);
         const res = await api.put(
           `/api/admin/employees/update/${editingEmployee.empId}`,
           payload
         );
-        console.log(res);
         Swal.fire({
           icon: "success",
           title: "Updated!",
@@ -81,10 +61,10 @@ function Employee() {
           timer: 2000,
           showConfirmButton: false,
         });
+        dispatch(updateEmployee(payload));
       } else {
         const res = await api.post("/api/admin/employees/add", payload);
 
-        console.log(res);
         Swal.fire({
           icon: "success",
           title: "Added!",
@@ -92,11 +72,11 @@ function Employee() {
           timer: 2000,
           showConfirmButton: false,
         });
+        dispatch(addEmployee(res.data.data));
       }
       setIsModalOpen(false);
       setEditingEmployee(null);
       resetForm();
-      fetchEmployees();
     } catch (err) {
       console.log(err);
       Swal.fire("Error!", "Something went wrong", "error");
@@ -114,10 +94,10 @@ function Employee() {
         timer: 2000,
         showConfirmButton: false,
       });
-      fetchEmployees();
+      dispatch(deleteEmployee(id));
     } catch (err) {
       console.log(err);
-      Swal.fire("Failed!", "Failed to Deelet employee", "error");
+      Swal.fire("Failed!", "Failed to Delete employee", "error");
     }
   };
 
@@ -145,7 +125,7 @@ function Employee() {
 
   const filteredEmployees = employees.filter((emp) =>
     emp.name.toLowerCase().includes(search.toLowerCase())
-  );
+  ).sort((a, b) => a?.status?.localeCompare(b.status));
 
   return (
     <div className="employee-container container">
@@ -162,82 +142,82 @@ function Employee() {
           ➕ Add Employee
         </button>
       </div>
-      {loading ? (
+      {/* {loading ? (
         <div className="text-center my-4">
           <div className="spinner-border text-primary" role="status"></div>
           <p>Loading employees...</p>
         </div>
       ) : (
-        <div className="table-responsive">
-          <table className="table table-hover table-striped align-middle shadow-sm">
-            <thead className="table-dark">
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Designation</th>
-                <th>Join Date</th>
-                <th>Leaving Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEmployees.length > 0 ? (
-                filteredEmployees.map((emp) => (
-                  <tr key={emp.empId}>
-                    <td>{emp.empId}</td>
-                    <td>{emp.name}</td>
-                    <td>{emp.email}</td>
-                    <td>{emp.phone}</td>
-                    <td>
-                      <span
-                        className={`badge ${
-                          emp.status === "ACTIVE"
-                            ? "bg-success"
-                            : "bg-secondary"
+        
+      )} */}
+      <div className="table-responsive">
+        <table className="table table-hover table-striped align-middle shadow-sm">
+          <thead className="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Designation</th>
+              <th>Join Date</th>
+              <th>Leaving Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredEmployees.length > 0 ? (
+              filteredEmployees.map((emp) => (
+                <tr key={emp.empId}>
+                  <td>{emp.empId}</td>
+                  <td>{emp.name}</td>
+                  <td>{emp.email}</td>
+                  <td>{emp.phone}</td>
+                  <td>
+                    <span
+                      className={`badge ${emp.status === "ACTIVE"
+                          ? "bg-success"
+                          : "bg-secondary"
                         }`}
-                      >
-                        {emp.status}
-                      </span>
-                    </td>
-                    <td>{emp.designation}</td>
-                    <td>{emp.join_date ? emp.join_date.split("T")[0] : "-"}</td>
-                    <td>
-                      {emp.leaving_date ? emp.leaving_date.split("T")[0] : "-"}
-                    </td>
-                    <td>
-                      {emp.status === "ACTIVE" && (
-                        <>
-                          <button
-                            className="btn btn-sm btn-primary me-2"
-                            onClick={() => openModal(emp)}
-                          >
-                            ✏️ Edit
-                          </button>
-                          <button
-                            className="btn btn-sm btn-danger"
-                            onClick={() => handleDelete(emp.empId)}
-                          >
-                            🗑️ Delete
-                          </button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="9" className="text-center text-muted">
-                    No employees found
+                    >
+                      {emp.status}
+                    </span>
+                  </td>
+                  <td>{emp.designation}</td>
+                  <td>{emp.join_date ? emp.join_date.split("T")[0] : "-"}</td>
+                  <td>
+                    {emp.leaving_date ? emp.leaving_date.split("T")[0] : "-"}
+                  </td>
+                  <td>
+                    {emp.status === "ACTIVE" && (
+                      <>
+                        <button
+                          className="btn btn-sm btn-primary me-2"
+                          onClick={() => openModal(emp)}
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className="btn btn-sm btn-danger"
+                          onClick={() => handleDelete(emp.empId)}
+                        >
+                          🗑️ Delete
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="text-center text-muted">
+                  No employees found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content card shadow-lg">
@@ -302,9 +282,8 @@ function Employee() {
               </div>
               <div className="mb-3">
                 <select
-                  className={`form-select ${
-                    errors.designation ? "is-invalid" : ""
-                  }`}
+                  className={`form-select ${errors.designation ? "is-invalid" : ""
+                    }`}
                   value={formData.designation}
                   onChange={(e) =>
                     setFormData({ ...formData, designation: e.target.value })

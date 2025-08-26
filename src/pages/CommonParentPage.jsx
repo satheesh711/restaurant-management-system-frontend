@@ -1,13 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link, useNavigate, Outlet } from "react-router-dom";
 import { logout } from "../services/authService";
 import { UserContext } from "../utilities/UserContext";
+import { useDispatch } from "react-redux";
+import { setEmployees } from "../utilities/redux/slices/employeeSlice";
+import api from "../config/axiosConfig";
 
 export default function AdminDashboard() {
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const userContext=useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   const isAdmin = userContext?.user?.role === "ROLE_ADMIN";
   const isStaff = userContext?.user?.role === "ROLE_STAFF";
@@ -16,6 +20,28 @@ export default function AdminDashboard() {
     logout();
     navigate("/");
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      const [itemsRes, ordersRes, waitersRes] = await Promise.all([
+        api.get("/api/staff/items/all"),
+        api.get("/api/staff/orders/allOrders"),
+        api.get("/api/staff/waiters/available"),
+      ]);
+
+      // dispatch(setItems(itemsRes.data.data));
+      // dispatch(setOrders(ordersRes.data.data));
+      // dispatch(setWaiters(waitersRes.data.data));
+      if (isAdmin) {
+        const [empRes] = await Promise.all([
+          api.get("/api/admin/employees"),
+        ]);
+        dispatch(setEmployees(empRes.data.data));
+      }
+    }
+
+    fetchData();
+  }, [isAdmin]);
 
   return (
     <div className="d-flex flex-column vh-100">
@@ -76,7 +102,7 @@ export default function AdminDashboard() {
               </li>
             )}
           </ul>
-        </div>  
+        </div>
 
         <div className="flex-grow-1 p-4">
           {/* <h2 className="fw-bold">Welcome, {userContext?.user?.sub}(Admin)!</h2>

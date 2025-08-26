@@ -9,11 +9,12 @@ import {
 } from "../services/itemService";
 import Swal from "sweetalert2";
 import ItemTable from "./ItemTable";
+import { useSelector } from "react-redux";
 
 export const Item = () => {
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +32,8 @@ export const Item = () => {
 
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
+
+  const categories = useSelector((state) => state.constants.itemCategories);
 
   // helpers for field validation
   const validateField = (name, value) => {
@@ -88,10 +91,6 @@ export const Item = () => {
         setFilteredItems(res);
       })
       .catch((err) => setError(err));
-
-    getCategories()
-      .then((res) => setCategories(res))
-      .catch(() => setCategories([]));
   }, []);
 
   useEffect(() => {

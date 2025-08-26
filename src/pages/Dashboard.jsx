@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import api from "../config/axiosConfig";
+import { useSelector } from "react-redux";
 
 function AdminDashboardMain() {
+
+  const employees = useSelector((store) => store.employees.employees);
+  const activeEmployeesLength=useSelector((store)=>store.employees.activeEmployeeCount);
+
   const [summary, setSummary] = useState({
     employees: 0,
     items: 0,
@@ -13,29 +18,28 @@ function AdminDashboardMain() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [empRes, itemsRes, ordersRes, activeEmpRes, waitersRes] = await Promise.all([
-        // const [empRes, itemsRes, activeEmpRes, waitersRes] = await Promise.all([
-          api.get("/api/admin/employees"),
+
+        const [itemsRes, ordersRes, waitersRes] = await Promise.all([
           api.get("/api/staff/items/all"),
           api.get("/api/staff/orders/allOrders"),
-          api.get("/api/admin/employees/active"),
           api.get("/api/staff/waiters/available"),
         ]);
 
-        setSummary({
-          employees: empRes?.data.data.length,
+        setSummary((prev) => ({
+          ...prev,
+          employees: employees.length,
           items: itemsRes?.data.data.length,
           orders: ordersRes?.data.data.filter(order => order.status === "COMPLETED").length,
           activeEmployees: activeEmpRes?.data.data.length,
           availableWaiters: waitersRes?.data?.data?.length || 0,
-        });
+        }));
       } catch (error) {
         console.error("Error fetching dashboard data", error);
       }
     }
 
     fetchData();
-  }, []);
+  }, [employees]);
 
   return (
     <div className="p-4">

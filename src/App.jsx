@@ -1,7 +1,7 @@
 import "./App.css";
 import { LoginForm } from "./pages/LoginForm";
 import Employee from "./pages/Employee";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import UserProvider from "./utilities/UserContext";
 import AdminPage from "./pages/CommonParentPage";
 import { Item } from "./components/Item";
@@ -12,13 +12,17 @@ import ItemsManagement from "./components/ItemsAvailability";
 import OrdersTable from "./components/OrdersTable";
 import PendingOrders from "./components/PendingOrders";
 import ErrorPage from "./pages/ErrorPage";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getCategories } from "./services/itemService";
+import { setItemCategories } from "./utilities/redux/slices/constantSlice";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   if (roles && !roles.includes(role)) {
@@ -28,6 +32,15 @@ function PrivateRoute({ children, roles }) {
 }
 
 export default function App() {
+
+  const dispatch=useDispatch();
+
+  useEffect(() => {
+    getCategories()
+          .then((res) => dispatch(setItemCategories(res)))
+          .catch(() => dispatch(setItemCategories([])));
+  }, [dispatch]);
+
   const appRouter = createBrowserRouter([
     {
       path: "/",

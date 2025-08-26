@@ -24,6 +24,7 @@ export function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!errorName && !errorPass) {
+      localStorage.clear();
       await login(userDetails);
       if (localStorage.getItem("token")) {
         const role = localStorage.getItem("role");
