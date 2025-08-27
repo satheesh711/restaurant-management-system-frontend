@@ -30,7 +30,7 @@ function AdminDashboardMain() {
           employees: employees.length,
           items: itemsRes?.data.data.length,
           orders: ordersRes?.data.data.filter(order => order.status === "COMPLETED").length,
-          activeEmployees: activeEmpRes?.data.data.length,
+          activeEmployees: activeEmployeesLength,
           availableWaiters: waitersRes?.data?.data?.length || 0,
         }));
       } catch (error) {

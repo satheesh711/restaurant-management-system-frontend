@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../config/axiosConfig";
+import { useSelector } from "react-redux";
 
 export default function OrdersTable() {
-  const [orders, setOrders] = useState([]);
+  // const [orders, setOrders] = useState([]);
+  const orders=useSelector((store) => store.orders);
   const [statuses] = useState(["PENDING", "CANCELLED", "COMPLETED"]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("");
@@ -10,18 +12,18 @@ export default function OrdersTable() {
 
   const itemsPerPage = 7;
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  // useEffect(() => {
+  //   fetchOrders();
+  // }, []);
 
-  const fetchOrders = async () => {
-    try {
-      const res = await api.get("/api/staff/orders/allOrders");
-      if (res.data.success) setOrders(res.data.data);
-    } catch (err) {
-      console.error("Error fetching orders:", err);
-    }
-  };
+  // const fetchOrders = async () => {
+  //   try {
+  //     const res = await api.get("/api/staff/orders/allOrders");
+  //     if (res.data.success) setOrders(res.data.data);
+  //   } catch (err) {
+  //     console.error("Error fetching orders:", err);
+  //   }
+  // };
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {

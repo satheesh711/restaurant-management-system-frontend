@@ -4,7 +4,6 @@ import {
   getItems,
   addItem,
   updateItem,
-  getCategories,
   uploadImage,
 } from "../services/itemService";
 import Swal from "sweetalert2";

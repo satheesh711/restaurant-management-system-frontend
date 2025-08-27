@@ -5,6 +5,7 @@ import { UserContext } from "../utilities/UserContext";
 import { useDispatch } from "react-redux";
 import { setEmployees } from "../utilities/redux/slices/employeeSlice";
 import api from "../config/axiosConfig";
+import { setOrders } from "../utilities/redux/slices/orderSlice";
 
 export default function AdminDashboard() {
 
@@ -30,7 +31,7 @@ export default function AdminDashboard() {
       ]);
 
       // dispatch(setItems(itemsRes.data.data));
-      // dispatch(setOrders(ordersRes.data.data));
+      dispatch(setOrders(ordersRes.data.data));
       // dispatch(setWaiters(waitersRes.data.data));
       if (isAdmin) {
         const [empRes] = await Promise.all([
