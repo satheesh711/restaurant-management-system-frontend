@@ -77,10 +77,14 @@ export default function FoodSelection({ name, phone, waiterId }) {
 
   const handleFinalConfirm = async () => {
     try {
+
+      const totalPrice = getTotalAmount(selectedItems);
+
       const response = await api.post("/api/staff/orders/addOrder", {
         name,
         phone,
         waiterId,
+        totalPrice
       });
       const id = response.data.data;
       setOrderId(id);
@@ -114,12 +118,12 @@ export default function FoodSelection({ name, phone, waiterId }) {
     }
   };
 
-  const totalAmount =
-    orderId &&
-    getPayload(orderId).reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
+  const getTotalAmount = (selectedItems) => {
+    return Object.entries(selectedItems).reduce((sum, [itemId, qty]) => {
+      const item = items.find((i) => i.id === parseInt(itemId));
+      return sum + (item ? item.price * qty : 0);
+    }, 0);
+  };
 
   return (
     <div className="container mt-4">
@@ -165,7 +169,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
                         ) : (
                           <button
                             className="btn btn-primary btn-sm"
-                            onClick={() => handleAdd(item.id)}
+                            onClick={() => handleAdd(item.id,item.price)}
                           >
                             Add
                           </button>
