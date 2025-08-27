@@ -43,3 +43,10 @@ export const getCategories = async () => {
   const res = await api.get(`/api/staff/items/categories`);
   return res.data.data || []; 
 };
+
+export const getSearchItems = async (search,category) => {
+  const res = await api.get(`/api/staff/items/searchItems`,{
+      params: { search, category }, // <-- query params
+    });
+  return res.data.data || []; 
+};

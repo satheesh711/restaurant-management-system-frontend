@@ -5,6 +5,9 @@ import { UserContext } from "../utilities/UserContext";
 import { useDispatch } from "react-redux";
 import { setEmployees } from "../utilities/redux/slices/employeeSlice";
 import api from "../config/axiosConfig";
+import { getCategories, getItems } from "../services/itemService";
+import { setItemCategories } from "../utilities/redux/slices/constantSlice";
+import { setItems } from "../utilities/redux/slices/itemSlice";
 
 export default function AdminDashboard() {
 
@@ -29,6 +32,10 @@ export default function AdminDashboard() {
         api.get("/api/staff/waiters/available"),
       ]);
 
+       getCategories()
+          .then((res) => dispatch(setItemCategories(res)))
+          .catch(() => dispatch(setItemCategories([])));
+      dispatch(setItems(itemsRes.data.data));
       // dispatch(setItems(itemsRes.data.data));
       // dispatch(setOrders(ordersRes.data.data));
       // dispatch(setWaiters(waitersRes.data.data));

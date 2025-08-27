@@ -4,7 +4,6 @@ import Employee from "./pages/Employee";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import UserProvider from "./utilities/UserContext";
 import AdminPage from "./pages/CommonParentPage";
-import { Item } from "./components/Item";
 import Dashboard from "./pages/Dashboard";
 import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
@@ -16,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getCategories } from "./services/itemService";
 import { setItemCategories } from "./utilities/redux/slices/constantSlice";
+import Item from "./components/item";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -36,9 +36,7 @@ export default function App() {
   const dispatch=useDispatch();
 
   useEffect(() => {
-    getCategories()
-          .then((res) => dispatch(setItemCategories(res)))
-          .catch(() => dispatch(setItemCategories([])));
+   
   }, [dispatch]);
 
   const appRouter = createBrowserRouter([
