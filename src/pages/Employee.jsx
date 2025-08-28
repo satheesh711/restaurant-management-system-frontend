@@ -23,6 +23,7 @@ function Employee() {
     setLoading(true);
     try {
       const res = await api.get("/api/admin/employees");
+      console.log(res.data.data);
       if (res.data.success) {
         setEmployees(
           res.data.data.sort((a, b) => a.status.localeCompare(b.status))
