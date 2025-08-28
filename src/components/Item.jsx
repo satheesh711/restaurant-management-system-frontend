@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import {
   deleteItem,
-  getItems,
   addItem,
   updateItem,
-  getCategories,
-  uploadImage,
+  getSearchItems,
 } from "../services/itemService";
 import Swal from "sweetalert2";
 import ItemTable from "./ItemTable";
+import { useDispatch, useSelector } from "react-redux";
+import { addItems, deleteItems, updateItems } from "../utilities/redux/slices/itemSlice";
 
-export const Item = () => {
-  const [items, setItems] = useState([]);
+const Item = () => {
+
   const [filteredItems, setFilteredItems] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,17 +21,36 @@ export const Item = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
-    imageUrl: "",
-    imagefile: "",
     description: "",
     category: "",
   });
+  const [file, setFile] = useState(null)
   const [showModal, setShowModal] = useState(false);
 
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
-  // helpers for field validation
+  const categories = useSelector((state) => state.constants.itemCategories);
+  const items = useSelector((state) => state.items);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFilteredItems(items);
+  }, [items])
+
+  const handleSearch = async()=>{
+     const searchItems = await getSearchItems(search,filterCategory);
+     setCurrentPage(1);
+     setFilteredItems(searchItems);
+  }
+
+  const handleFilterCategory = async(category)=>{
+    const searchItems = await getSearchItems(search,category);
+    setFilteredItems(searchItems);
+    setCurrentPage(1);
+    setFilterCategory((prev)=> category);
+  }
+
   const validateField = (name, value) => {
     switch (name) {
       case "name":
@@ -81,34 +99,8 @@ export const Item = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  useEffect(() => {
-    getItems()
-      .then((res) => {
-        setItems(res);
-        setFilteredItems(res);
-      })
-      .catch((err) => setError(err));
 
-    getCategories()
-      .then((res) => setCategories(res))
-      .catch(() => setCategories([]));
-  }, []);
 
-  useEffect(() => {
-    let data = [...items];
-    if (search.trim()) {
-      data = data.filter(
-        (item) =>
-          item.name.toLowerCase().includes(search.toLowerCase()) ||
-          item.description.toLowerCase().includes(search.toLowerCase())
-      );
-    }
-    if (filterCategory !== "All") {
-      data = data.filter((item) => item.category === filterCategory);
-    }
-    setFilteredItems(data);
-    setCurrentPage(1);
-  }, [search, filterCategory, items]);
 
   const successShow = (message) => {
     Swal.fire({
@@ -146,8 +138,8 @@ export const Item = () => {
       if (result.isConfirmed) {
         try {
           const res = await deleteItem(id);
+          dispatch(deleteItems(id));
           successShow(res.message);
-          setItems((prev) => prev.filter((item) => item.id !== id));
         } catch (err) {
           errorShow(err.response?.data?.message || "Delete failed");
         }
@@ -163,17 +155,21 @@ export const Item = () => {
 
     try {
       if (editingItem) {
-        const res = await updateItem(editingItem.id, formData);
+        const item = new FormData();
+        item.append("file", file);
+        item.append("item", new Blob([JSON.stringify(formData)], { type: "application/json" }))
+        const res = await updateItem(editingItem.id, item);
+        dispatch(updateItems({ "id": editingItem.id, "item": res.data }));
         successShow(res.message);
-        setItems((prev) =>
-          prev.map((item) =>
-            item.id === editingItem.id ? { ...item, ...formData } : item
-          )
-        );
+
       } else {
-        const res = await addItem(formData);
+        const item = new FormData();
+        item.append("file", file);
+        item.append("item", new Blob([JSON.stringify(formData)], { type: "application/json" }))
+        const res = await addItem(item);
+        dispatch(addItems(res.data))
         successShow(res.message);
-        setItems((prev) => [...prev, res.data]);
+
       }
       closeModal();
     } catch (err) {
@@ -207,18 +203,23 @@ export const Item = () => {
   return (
     <div>
       <div className="d-flex justify-content-between mb-3">
-        <input
-          type="text"
-          placeholder="Search by name or description"
-          className="form-control w-25"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div className="d-flex w-25">
+          <input
+            type="text"
+            placeholder="Search by name or description"
+            className="form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button className="btn btn-outline-primary ms-2" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
 
         <select
           className="form-select w-25"
           value={filterCategory}
-          onChange={(e) => setFilterCategory(e.target.value)}
+          onChange={(e) => handleFilterCategory(e.target.value)}
         >
           <option value="All">All Categories</option>
           {categories.map((cat) => (
@@ -267,9 +268,8 @@ export const Item = () => {
               <div className="modal-body">
                 <input
                   type="text"
-                  className={`form-control mb-2 ${
-                    errors.name ? "is-invalid" : ""
-                  }`}
+                  className={`form-control mb-2 ${errors.name ? "is-invalid" : ""
+                    }`}
                   placeholder="Name"
                   value={formData.name}
                   onChange={(e) => {
@@ -286,9 +286,8 @@ export const Item = () => {
                 )}
                 <input
                   type="number"
-                  className={`form-control mb-2 ${
-                    errors.price ? "is-invalid" : ""
-                  }`}
+                  className={`form-control mb-2 ${errors.price ? "is-invalid" : ""
+                    }`}
                   placeholder="Price"
                   value={formData.price}
                   onChange={(e) => {
@@ -306,35 +305,12 @@ export const Item = () => {
                   type="file"
                   accept="image/png, image/jpeg"
                   className="form-control mb-2"
-                  onChange={async (e) => {
-                    let newfile = "";
-                    if (e.target.files && e.target.files[0]) {
-                      newfile = e.target.files[0];
-                      setFormData({ ...formData, imagefile: newfile });
-                    }
-
-                    if (!newfile) {
-                      setFormData({ ...formData, imageUrl: "" });
-                    } else if (typeof newfile === "string") {
-                      setFormData({ ...formData, imageUrl: newfile });
-                    } else if (newfile instanceof File) {
-                      if (
-                        formData.imageUrl &&
-                        formData.imageUrl.includes(newfile.name)
-                      ) {
-                        console.log("Same image already uploaded, skipping...");
-                      } else {
-                        const imgUrl = await uploadImage(newfile);
-                        setFormData({ ...formData, imageUrl: imgUrl });
-                      }
-                    }
-                  }}
+                  onChange={(e) => setFile(e.target.files[0])}
                 />
 
                 <textarea
-                  className={`form-control mb-2 ${
-                    errors.description ? "is-invalid" : ""
-                  }`}
+                  className={`form-control mb-2 ${errors.description ? "is-invalid" : ""
+                    }`}
                   placeholder="Description"
                   value={formData.description}
                   onChange={(e) => {
@@ -354,9 +330,8 @@ export const Item = () => {
                   <div className="invalid-feedback">{errors.description}</div>
                 )}
                 <select
-                  className={`form-control mb-2 ${
-                    errors.category ? "is-invalid" : ""
-                  }`}
+                  className={`form-control mb-2 ${errors.category ? "is-invalid" : ""
+                    }`}
                   value={formData.category}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -395,3 +370,4 @@ export const Item = () => {
     </div>
   );
 };
+export default Item;

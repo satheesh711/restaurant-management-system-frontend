@@ -8,7 +8,6 @@ import {
 } from "react-router-dom";
 import UserProvider from "./utilities/UserContext";
 import AdminPage from "./pages/CommonParentPage";
-import { Item } from "./components/Item";
 import Dashboard from "./pages/Dashboard";
 import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
@@ -16,13 +15,16 @@ import ItemsManagement from "./components/ItemsAvailability";
 import OrdersTable from "./components/OrdersTable";
 import PendingOrders from "./components/PendingOrders";
 import ErrorPage from "./pages/ErrorPage";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import Item from "./components/Item";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
   if (!token) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   if (roles && !roles.includes(role)) {
@@ -32,6 +34,10 @@ function PrivateRoute({ children, roles }) {
 }
 
 export default function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {}, [dispatch]);
+
   const appRouter = createBrowserRouter([
     {
       path: "/",

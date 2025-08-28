@@ -59,31 +59,44 @@ export default function FoodSelection({ name, phone, waiterId }) {
       Swal.fire("Oops!", "Select at least 1 item", "warning");
       return;
     }
-
-    try {
-      const response = await api.post("/api/staff/orders/addOrder", {
-        name,
-        phone,
-        waiterId,
-      });
-      const id = response.data.data;
-      setOrderId(id);
-      setReviewMode(true);
-    } catch (err) {
-      console.error("Error creating order:", err.response?.data || err.message);
-      Swal.fire("Error!", "Could not create order", "error");
-    }
+    setReviewMode(true);
+    // try {
+    //   const response = await api.post("/api/staff/orders/addOrder", {
+    //     name,
+    //     phone,
+    //     waiterId,
+    //   });
+    //   const id = response.data.data;
+    //   setOrderId(id);
+    //   setReviewMode(true);
+    // } catch (err) {
+    //   console.error("Error creating order:", err.response?.data || err.message);
+    //   Swal.fire("Error!", "Could not create order", "error");
+    // }
   };
 
   const handleFinalConfirm = async () => {
     try {
-      const payload = getPayload(orderId);
+
+      const totalPrice = getTotalAmount(selectedItems);
+
+      const response = await api.post("/api/staff/orders/addOrder", {
+        name,
+        phone,
+        waiterId,
+        totalPrice
+      });
+      const id = response.data.data;
+      setOrderId(id);
+      console.log(id);
+      console.log(orderId);
+      const payload = getPayload(id);
 
       await api.post("/api/staff/order-details", payload, {
         headers: { "Content-Type": "application/json" },
       });
 
-      await api.put(`/api/staff/orders/updateAmount/${orderId}`, null, {
+      await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -105,12 +118,12 @@ export default function FoodSelection({ name, phone, waiterId }) {
     }
   };
 
-  const totalAmount =
-    orderId &&
-    getPayload(orderId).reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
+  const getTotalAmount = (selectedItems) => {
+    return Object.entries(selectedItems).reduce((sum, [itemId, qty]) => {
+      const item = items.find((i) => i.id === parseInt(itemId));
+      return sum + (item ? item.price * qty : 0);
+    }, 0);
+  };
 
   return (
     <div className="container mt-4">
@@ -156,7 +169,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
                         ) : (
                           <button
                             className="btn btn-primary btn-sm"
-                            onClick={() => handleAdd(item.id)}
+                            onClick={() => handleAdd(item.id,item.price)}
                           >
                             Add
                           </button>
