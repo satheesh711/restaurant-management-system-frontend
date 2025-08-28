@@ -61,10 +61,9 @@ export default function FoodSelection({ name, phone, waiterId }) {
       return;
     }
     setReviewMode(true);
-  }
+  };
   const handleFinalConfirm = async () => {
     try {
-
       const totalPrice = getTotalAmount(selectedItems);
 
       const response = await api.post("/api/staff/orders/addOrder", {
@@ -72,9 +71,9 @@ export default function FoodSelection({ name, phone, waiterId }) {
         phone,
         waiterId,
         totalPrice,
-        orderDetailsList: getPayload()
+        orderDetailsList: getPayload(),
       });
-      const newOrder=response.data.data;
+      const newOrder = response.data.data;
       dispatch(addOrder(newOrder));
 
       Swal.fire({
@@ -146,7 +145,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
                         ) : (
                           <button
                             className="btn btn-primary btn-sm"
-                            onClick={() => handleAdd(item.id,item.price)}
+                            onClick={() => handleAdd(item.id, item.price)}
                           >
                             Add
                           </button>
