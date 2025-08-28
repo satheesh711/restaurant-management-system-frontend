@@ -5,11 +5,15 @@ import "antd/dist/reset.css";
 import "../assets/Employee.css";
 import Swal from "sweetalert2";
 import { useSelector, useDispatch } from "react-redux";
-import { addEmployee, deleteEmployee, updateEmployee } from "../utilities/redux/slices/employeeSlice";
+import {
+  addEmployee,
+  deleteEmployee,
+  updateEmployee,
+} from "../utilities/redux/slices/employeeSlice";
 
 function Employee() {
   const employees = useSelector((store) => store.employees.employees);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -122,10 +126,12 @@ function Employee() {
     setErrors({});
   };
 
-  const filteredEmployees = employees.filter((emp) =>
-    emp.name.toLowerCase().includes(search.toLowerCase())
-  ).sort((a, b) => a?.status?.localeCompare(b.status));
-
+  const filteredEmployees = employees
+    .filter(
+      (emp) =>
+        emp && emp.name && emp.name.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => a?.status?.localeCompare(b.status));
   return (
     <div className="employee-container container">
       <h2 className="mb-4 text-center text-primary">👥 Employee Management</h2>
@@ -174,10 +180,9 @@ function Employee() {
                   <td>{emp.phone}</td>
                   <td>
                     <span
-                      className={`badge ${emp.status === "ACTIVE"
-                          ? "bg-success"
-                          : "bg-secondary"
-                        }`}
+                      className={`badge ${
+                        emp.status === "ACTIVE" ? "bg-success" : "bg-secondary"
+                      }`}
                     >
                       {emp.status}
                     </span>
@@ -194,13 +199,13 @@ function Employee() {
                           className="btn btn-sm btn-primary me-2"
                           onClick={() => openModal(emp)}
                         >
-                          ✏️ Edit
+                          ✏ Edit
                         </button>
                         <button
                           className="btn btn-sm btn-danger"
                           onClick={() => handleDelete(emp.empId)}
                         >
-                          🗑️ Delete
+                          🗑 Delete
                         </button>
                       </>
                     )}
@@ -221,7 +226,7 @@ function Employee() {
         <div className="modal-overlay">
           <div className="modal-content card shadow-lg">
             <h3 className="text-center text-primary mb-3">
-              {editingEmployee ? "✏️ Update Employee" : "➕ Add Employee"}
+              {editingEmployee ? "✏ Update Employee" : "➕ Add Employee"}
             </h3>
             <form onSubmit={handleSave}>
               <div className="mb-3">
@@ -281,8 +286,9 @@ function Employee() {
               </div>
               <div className="mb-3">
                 <select
-                  className={`form-select ${errors.designation ? "is-invalid" : ""
-                    }`}
+                  className={`form-select ${
+                    errors.designation ? "is-invalid" : ""
+                  }`}
                   value={formData.designation}
                   onChange={(e) =>
                     setFormData({ ...formData, designation: e.target.value })

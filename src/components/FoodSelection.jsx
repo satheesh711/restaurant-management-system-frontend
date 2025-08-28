@@ -77,14 +77,13 @@ export default function FoodSelection({ name, phone, waiterId }) {
 
   const handleFinalConfirm = async () => {
     try {
-
       const totalPrice = getTotalAmount(selectedItems);
 
       const response = await api.post("/api/staff/orders/addOrder", {
         name,
         phone,
         waiterId,
-        totalPrice
+        totalPrice,
       });
       const id = response.data.data;
       setOrderId(id);
@@ -169,7 +168,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
                         ) : (
                           <button
                             className="btn btn-primary btn-sm"
-                            onClick={() => handleAdd(item.id,item.price)}
+                            onClick={() => handleAdd(item.id, item.price)}
                           >
                             Add
                           </button>
@@ -214,7 +213,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
                 <td colSpan="3" className="text-end fw-bold">
                   Total
                 </td>
-                <td className="fw-bold">₹{totalAmount}</td>
+                <td className="fw-bold">₹{getTotalAmount(selectedItems)}</td>
               </tr>
             </tbody>
           </table>
