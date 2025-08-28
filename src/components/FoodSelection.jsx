@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 export default function FoodSelection({ name, phone, waiterId }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
-  const [orderId, setOrderId] = useState(null);
   const [reviewMode, setReviewMode] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
