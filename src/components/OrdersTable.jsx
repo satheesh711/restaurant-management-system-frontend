@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import api from "../config/axiosConfig";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { updateOrderStatus } from "../utilities/redux/slices/orderSlice";
 
 export default function OrdersTable() {
   // const [orders, setOrders] = useState([]);
+  const dispatch=useDispatch();
   const orders=useSelector((store) => store.orders);
-  const [statuses] = useState(["PENDING", "CANCELLED", "COMPLETED"]);
+  const [statuses] = useState(["Pending", "Cancelled", "Completed"]);
   const [currentPage, setCurrentPage] = useState(1);
   const [filterStatus, setFilterStatus] = useState("");
   const [filterDate, setFilterDate] = useState("");
@@ -30,19 +32,20 @@ export default function OrdersTable() {
       await api.put(
         `/api/staff/orders/updateStatus?orderId=${orderId}&status=${newStatus}`
       );
-      setOrders((prev) =>
-        prev.map((order) =>
-          order.orderId === orderId ? { ...order, status: newStatus } : order
-        )
-      );
+      // setOrders((prev) =>
+      //   prev.map((order) =>
+      //     order.orderId === orderId ? { ...order, status: newStatus } : order
+      //   )
+      // );
+      dispatch(updateOrderStatus({orderId, newStatus}));
     } catch (err) {
       console.error("Error updating status:", err);
     }
   };
 
   const getAvailableStatuses = (currentStatus) => {
-    if (currentStatus === "PENDING") {
-      return statuses.filter((s) => s !== "PENDING");
+    if (currentStatus === "Pending") {
+      return statuses.filter((s) => s !== "Pending");
     }
     return [];
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import api from "../config/axiosConfig";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/reset.css";
@@ -48,8 +48,6 @@ function Employee() {
     if (!validateForm()) return;
     const payload = {
       ...formData,
-      // join_date: formData.join_date || null,
-      // leaving_date: formData.leaving_date || null,
     };
     try {
       if (editingEmployee) {

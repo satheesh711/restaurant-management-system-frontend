@@ -13,7 +13,6 @@ import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
 import ItemsManagement from "./components/ItemsAvailability";
 import OrdersTable from "./components/OrdersTable";
-import PendingOrders from "./components/PendingOrders";
 import ErrorPage from "./pages/ErrorPage";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -90,7 +89,7 @@ export default function App() {
           index: true,
           element: (
             <PrivateRoute roles={["ROLE_STAFF"]}>
-              <PendingOrders />
+              <ItemsManagement />
             </PrivateRoute>
           ),
         },
@@ -99,14 +98,6 @@ export default function App() {
           element: (
             <PrivateRoute roles={["ROLE_STAFF"]}>
               <OrderForm />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "item-availability",
-          element: (
-            <PrivateRoute roles={["ROLE_STAFF"]}>
-              <ItemsManagement />
             </PrivateRoute>
           ),
         },

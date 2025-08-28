@@ -11,14 +11,14 @@ const orderSlice=createSlice({
             state.push(action.payload);
         },
         updateOrderStatus: (state, action) => {
-            const { orderId, status } = action.payload;
-            const existingOrder = state.find(order => order.id === orderId);
-            if (existingOrder) {
-                existingOrder.status = status;
+            const { orderId, newStatus } = action.payload;
+            const orderIndex = state.findIndex(order => order.orderId === orderId);
+            if (orderIndex !== -1) {
+                state[orderIndex].status = newStatus;
             }
         }
     },
 });
 
-export const { setOrders, addOrder } = orderSlice.actions;
+export const { setOrders, addOrder, updateOrderStatus } = orderSlice.actions;
 export default orderSlice.reducer;

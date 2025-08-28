@@ -36,7 +36,6 @@ export default function AdminDashboard() {
         .then((res) => dispatch(setItemCategories(res)))
         .catch(() => dispatch(setItemCategories([])));
       dispatch(setItems(itemsRes.data.data));
-      // dispatch(setItems(itemsRes.data.data));
       dispatch(setOrders(ordersRes.data.data));
       // dispatch(setWaiters(waitersRes.data.data));
       if (isAdmin) {
@@ -79,18 +78,6 @@ export default function AdminDashboard() {
                 </Link>
               </li>
             )}
-            {isStaff && (
-              <li className="nav-item">
-                <Link
-                  className={`nav-link text-dark ${
-                    location.pathname === "/staff" ? "fw-bold" : ""
-                  }`}
-                  to="/staff"
-                >
-                  Pending Orders
-                </Link>
-              </li>
-            )}
             {isAdmin && (
               <li className="nav-item">
                 <Link
@@ -119,6 +106,20 @@ export default function AdminDashboard() {
                 </Link>
               </li>
             )}
+
+            {isStaff && (
+              <li className="nav-item">
+                <Link
+                  className={`nav-link text-dark ${
+                    location.pathname === "/staff" ? "fw-bold" : ""
+                  }`}
+                  to="/staff"
+                >
+                  Item Availability Management
+                </Link>
+              </li>
+            )}
+
             {isStaff && (
               <li className="nav-item">
                 <Link
@@ -132,20 +133,6 @@ export default function AdminDashboard() {
               </li>
             )}
 
-            {isStaff && (
-              <li className="nav-item">
-                <Link
-                  className={`nav-link text-dark ${
-                    location.pathname === "/staff/item-availability"
-                      ? "fw-bold"
-                      : ""
-                  }`}
-                  to="/staff/item-availability"
-                >
-                  Item Availability Management
-                </Link>
-              </li>
-            )}
             {isStaff && (
               <li className="nav-item">
                 <Link
@@ -164,9 +151,6 @@ export default function AdminDashboard() {
         </div>
 
         <div className="flex-grow-1 p-4">
-          {/* <h2 className="fw-bold">Welcome, {userContext?.user?.sub}(Admin)!</h2>
-          <p className="text-muted">Select an option from the sidebar.</p> 
-          */}
           <Outlet />
         </div>
       </div>

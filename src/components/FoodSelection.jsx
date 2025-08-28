@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import api from "../config/axiosConfig";
+import { addOrder } from "../utilities/redux/slices/orderSlice";
+import { useDispatch } from "react-redux";
 
 export default function FoodSelection({ name, phone, waiterId }) {
   const [items, setItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState({});
-  const [orderId, setOrderId] = useState(null);
   const [reviewMode, setReviewMode] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     api
@@ -42,11 +44,10 @@ export default function FoodSelection({ name, phone, waiterId }) {
     });
   };
 
-  const getPayload = (id) => {
+  const getPayload = () => {
     return Object.entries(selectedItems).map(([itemId, qty]) => {
       const item = items.find((i) => i.id === parseInt(itemId));
       return {
-        orderId: id,
         itemId: parseInt(itemId),
         quantity: qty,
         price: item.price,
@@ -60,21 +61,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
       return;
     }
     setReviewMode(true);
-    // try {
-    //   const response = await api.post("/api/staff/orders/addOrder", {
-    //     name,
-    //     phone,
-    //     waiterId,
-    //   });
-    //   const id = response.data.data;
-    //   setOrderId(id);
-    //   setReviewMode(true);
-    // } catch (err) {
-    //   console.error("Error creating order:", err.response?.data || err.message);
-    //   Swal.fire("Error!", "Could not create order", "error");
-    // }
   };
-
   const handleFinalConfirm = async () => {
     try {
       const totalPrice = getTotalAmount(selectedItems);
@@ -84,20 +71,10 @@ export default function FoodSelection({ name, phone, waiterId }) {
         phone,
         waiterId,
         totalPrice,
+        orderDetailsList: getPayload(),
       });
-      const id = response.data.data;
-      setOrderId(id);
-      console.log(id);
-      console.log(orderId);
-      const payload = getPayload(id);
-
-      await api.post("/api/staff/order-details", payload, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      await api.put(`/api/staff/orders/updateAmount/${id}`, null, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const newOrder = response.data.data;
+      dispatch(addOrder(newOrder));
 
       Swal.fire({
         icon: "success",
@@ -201,7 +178,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
               </tr>
             </thead>
             <tbody>
-              {getPayload(orderId).map((item) => (
+              {getPayload().map((item) => (
                 <tr key={item.itemId}>
                   <td>{items.find((i) => i.id === item.itemId)?.name}</td>
                   <td>{item.quantity}</td>
