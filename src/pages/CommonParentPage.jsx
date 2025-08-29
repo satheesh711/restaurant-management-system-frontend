@@ -10,6 +10,7 @@ import { setItemCategories } from "../utilities/redux/slices/constantSlice";
 import { setItems } from "../utilities/redux/slices/itemSlice";
 import { getCategories } from "../services/itemService";
 import { setLoading } from "../utilities/redux/slices/loadingSlice";
+import Swal from "sweetalert2";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -24,13 +25,19 @@ export default function AdminDashboard() {
     dispatch(setLoading(true));
     logout();
     dispatch(setLoading(false));
-    alert("User Logged Out successfully");
+    Swal.fire({
+      icon: "success",
+      title: "Success!",
+      text: "User Logged out successfully.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
     navigate("/");
   };
 
   useEffect(() => {
     async function fetchData() {
-      const [itemsRes, ordersRes/*, waitersRes*/] = await Promise.all([
+      const [itemsRes, ordersRes /*, waitersRes*/] = await Promise.all([
         api.get("/api/items/all"),
         api.get("/api/orders/allOrders"),
         // api.get("/api/waiters/available"),
