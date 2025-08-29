@@ -10,6 +10,7 @@ import {
   deleteEmployee,
   updateEmployee,
 } from "../utilities/redux/slices/employeeSlice";
+import { setLoading } from "../utilities/redux/slices/loadingSlice";
 
 function Employee() {
   const employees = useSelector((store) => store.employees.employees);
@@ -51,10 +52,12 @@ function Employee() {
     };
     try {
       if (editingEmployee) {
-        await api.put(
-          `/api/employees/update/${editingEmployee.empId}`,
+        dispatch(setLoading(true));
+        const res = await api.put(
+          `/api/admin/employees/update/${editingEmployee.empId}`,
           payload
         );
+        dispatch(setLoading(false));
         Swal.fire({
           icon: "success",
           title: "Updated!",
@@ -64,7 +67,9 @@ function Employee() {
         });
         dispatch(updateEmployee(payload));
       } else {
-        const res = await api.post("/api/employees/add", payload);
+        dispatch(setLoading(true));
+        const res = await api.post("/api/admin/employees/add", payload);
+        dispatch(setLoading(false));
 
         Swal.fire({
           icon: "success",
@@ -86,8 +91,10 @@ function Employee() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await api.delete(`/api/employees/delete/${id}`);
+      dispatch(setLoading(true));
+      const res = await api.delete(`/api/admin/employees/delete/${id}`);
       console.log(res);
+      dispatch(setLoading(false));
       Swal.fire({
         icon: "success",
         title: "Deleted!",

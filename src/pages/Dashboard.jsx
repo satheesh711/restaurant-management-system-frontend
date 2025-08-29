@@ -21,9 +21,7 @@ function AdminDashboardMain() {
     async function fetchData() {
       try {
 
-        const [waitersRes] = await Promise.all([
-          api.get("/api/staff/waiters/available"),
-        ]);
+        const waitersRes = await api.get("/api/staff/waiters/available");
 
         setSummary((prev) => ({
           ...prev,

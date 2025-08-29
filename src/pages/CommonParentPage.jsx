@@ -26,10 +26,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     async function fetchData() {
-      const [itemsRes, ordersRes, waitersRes] = await Promise.all([
+      const [itemsRes, ordersRes/*, waitersRes*/] = await Promise.all([
         api.get("/api/staff/items/all"),
         api.get("/api/staff/orders/allOrders"),
-        api.get("/api/staff/waiters/available"),
+        // api.get("/api/staff/waiters/available"),
       ]);
 
       getCategories()
