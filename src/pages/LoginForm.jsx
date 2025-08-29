@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
+import { useDispatch } from "react-redux";
+import { setLoading } from "../utilities/redux/slices/loadingSlice";
 
 export function LoginForm() {
+  const dispatch = useDispatch();
   const [userDetails, setUserDetails] = useState({
     username: "",
     password: "",
@@ -28,7 +31,9 @@ export function LoginForm() {
     e.preventDefault();
     if (!errorName && !errorPass) {
       localStorage.clear();
+      dispatch(setLoading(true));
       await login(userDetails);
+      dispatch(setLoading(false));
       if (localStorage.getItem("token")) {
         const role = localStorage.getItem("role");
         if (role === "ROLE_ADMIN") {

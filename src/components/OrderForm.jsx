@@ -12,7 +12,7 @@ export default function OrderForm() {
 
   useEffect(() => {
     api
-      .get("/api/staff/waiters/available")
+      .get("/api/waiters/available")
       .then((res) => {
         setWaiters(res.data.data);
       })

@@ -9,6 +9,7 @@ import { setOrders } from "../utilities/redux/slices/orderSlice";
 import { setItemCategories } from "../utilities/redux/slices/constantSlice";
 import { setItems } from "../utilities/redux/slices/itemSlice";
 import { getCategories } from "../services/itemService";
+import { setLoading } from "../utilities/redux/slices/loadingSlice";
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -20,16 +21,19 @@ export default function AdminDashboard() {
   const isStaff = userContext?.user?.role === "ROLE_STAFF";
 
   const logoutHandler = () => {
+    dispatch(setLoading(true));
     logout();
+    dispatch(setLoading(false));
+    alert("User Logged Out successfully");
     navigate("/");
   };
 
   useEffect(() => {
     async function fetchData() {
       const [itemsRes, ordersRes/*, waitersRes*/] = await Promise.all([
-        api.get("/api/staff/items/all"),
-        api.get("/api/staff/orders/allOrders"),
-        // api.get("/api/staff/waiters/available"),
+        api.get("/api/items/all"),
+        api.get("/api/orders/allOrders"),
+        // api.get("/api/waiters/available"),
       ]);
 
       getCategories()
@@ -39,7 +43,7 @@ export default function AdminDashboard() {
       dispatch(setOrders(ordersRes.data.data));
       // dispatch(setWaiters(waitersRes.data.data));
       if (isAdmin) {
-        const [empRes] = await Promise.all([api.get("/api/admin/employees")]);
+        const [empRes] = await Promise.all([api.get("/api/employees")]);
         dispatch(setEmployees(empRes.data.data));
       }
     }
