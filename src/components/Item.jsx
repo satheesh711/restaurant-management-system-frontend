@@ -13,6 +13,7 @@ import {
   deleteItems,
   updateItems,
 } from "../utilities/redux/slices/itemSlice";
+import { setLoading } from "../utilities/redux/slices/loadingSlice";
 
 const Item = () => {
   const [filteredItems, setFilteredItems] = useState([]);
@@ -136,9 +137,11 @@ const Item = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
+          dispatch(setLoading(true));
           const res = await deleteItem(id);
           dispatch(deleteItems(id));
           successShow(res.message);
+          dispatch(setLoading(false));
         } catch (err) {
           errorShow(err.response?.data?.message || "Delete failed");
         }
@@ -153,6 +156,7 @@ const Item = () => {
     }
 
     try {
+      dispatch(setLoading(true));
       if (editingItem) {
         const item = new FormData();
         item.append("file", file);
@@ -163,6 +167,7 @@ const Item = () => {
         const res = await updateItem(editingItem.id, item);
         dispatch(updateItems({ id: editingItem.id, item: res.data }));
         successShow(res.message);
+        dispatch(setLoading(false));
       } else {
         const item = new FormData();
         item.append("file", file);
@@ -170,9 +175,11 @@ const Item = () => {
           "item",
           new Blob([JSON.stringify(formData)], { type: "application/json" })
         );
+        dispatch(setLoading(true));
         const res = await addItem(item);
         dispatch(addItems(res.data));
         successShow(res.message);
+        dispatch(setLoading(false));
       }
       closeModal();
     } catch (err) {
