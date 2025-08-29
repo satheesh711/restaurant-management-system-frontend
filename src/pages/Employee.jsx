@@ -51,8 +51,8 @@ function Employee() {
     };
     try {
       if (editingEmployee) {
-        const res = await api.put(
-          `/api/admin/employees/update/${editingEmployee.empId}`,
+        await api.put(
+          `/api/employees/update/${editingEmployee.empId}`,
           payload
         );
         Swal.fire({
@@ -64,7 +64,7 @@ function Employee() {
         });
         dispatch(updateEmployee(payload));
       } else {
-        const res = await api.post("/api/admin/employees/add", payload);
+        const res = await api.post("/api/employees/add", payload);
 
         Swal.fire({
           icon: "success",
@@ -86,7 +86,7 @@ function Employee() {
 
   const handleDelete = async (id) => {
     try {
-      const res = await api.delete(`/api/admin/employees/delete/${id}`);
+      const res = await api.delete(`/api/employees/delete/${id}`);
       console.log(res);
       Swal.fire({
         icon: "success",
