@@ -14,7 +14,6 @@ export default function OrderForm() {
     api
       .get("/api/staff/waiters/available")
       .then((res) => {
-        console.log(res.data.data);
         setWaiters(res.data.data);
       })
       .catch((err) => {

@@ -8,10 +8,13 @@ import {
 import Swal from "sweetalert2";
 import ItemTable from "./ItemTable";
 import { useDispatch, useSelector } from "react-redux";
-import { addItems, deleteItems, updateItems } from "../utilities/redux/slices/itemSlice";
+import {
+  addItems,
+  deleteItems,
+  updateItems,
+} from "../utilities/redux/slices/itemSlice";
 
 const Item = () => {
-
   const [filteredItems, setFilteredItems] = useState([]);
   const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
@@ -24,7 +27,7 @@ const Item = () => {
     description: "",
     category: "",
   });
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const [search, setSearch] = useState("");
@@ -36,20 +39,20 @@ const Item = () => {
 
   useEffect(() => {
     setFilteredItems(items);
-  }, [items])
+  }, [items]);
 
-  const handleSearch = async()=>{
-     const searchItems = await getSearchItems(search,filterCategory);
-     setCurrentPage(1);
-     setFilteredItems(searchItems);
-  }
+  const handleSearch = async () => {
+    const searchItems = await getSearchItems(search, filterCategory);
+    setCurrentPage(1);
+    setFilteredItems(searchItems);
+  };
 
-  const handleFilterCategory = async(category)=>{
-    const searchItems = await getSearchItems(search,category);
+  const handleFilterCategory = async (category) => {
+    const searchItems = await getSearchItems(search, category);
     setFilteredItems(searchItems);
     setCurrentPage(1);
-    setFilterCategory((prev)=> category);
-  }
+    setFilterCategory((prev) => category);
+  };
 
   const validateField = (name, value) => {
     switch (name) {
@@ -153,19 +156,23 @@ const Item = () => {
       if (editingItem) {
         const item = new FormData();
         item.append("file", file);
-        item.append("item", new Blob([JSON.stringify(formData)], { type: "application/json" }))
+        item.append(
+          "item",
+          new Blob([JSON.stringify(formData)], { type: "application/json" })
+        );
         const res = await updateItem(editingItem.id, item);
-        dispatch(updateItems({ "id": editingItem.id, "item": res.data }));
+        dispatch(updateItems({ id: editingItem.id, item: res.data }));
         successShow(res.message);
-
       } else {
         const item = new FormData();
         item.append("file", file);
-        item.append("item", new Blob([JSON.stringify(formData)], { type: "application/json" }))
+        item.append(
+          "item",
+          new Blob([JSON.stringify(formData)], { type: "application/json" })
+        );
         const res = await addItem(item);
-        dispatch(addItems(res.data))
+        dispatch(addItems(res.data));
         successShow(res.message);
-
       }
       closeModal();
     } catch (err) {
@@ -207,7 +214,10 @@ const Item = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <button className="btn btn-outline-primary ms-2" onClick={handleSearch}>
+          <button
+            className="btn btn-outline-primary ms-2"
+            onClick={handleSearch}
+          >
             Search
           </button>
         </div>
@@ -264,8 +274,9 @@ const Item = () => {
               <div className="modal-body">
                 <input
                   type="text"
-                  className={`form-control mb-2 ${errors.name ? "is-invalid" : ""
-                    }`}
+                  className={`form-control mb-2 ${
+                    errors.name ? "is-invalid" : ""
+                  }`}
                   placeholder="Name"
                   value={formData.name}
                   onChange={(e) => {
@@ -282,8 +293,9 @@ const Item = () => {
                 )}
                 <input
                   type="number"
-                  className={`form-control mb-2 ${errors.price ? "is-invalid" : ""
-                    }`}
+                  className={`form-control mb-2 ${
+                    errors.price ? "is-invalid" : ""
+                  }`}
                   placeholder="Price"
                   value={formData.price}
                   onChange={(e) => {
@@ -305,8 +317,9 @@ const Item = () => {
                 />
 
                 <textarea
-                  className={`form-control mb-2 ${errors.description ? "is-invalid" : ""
-                    }`}
+                  className={`form-control mb-2 ${
+                    errors.description ? "is-invalid" : ""
+                  }`}
                   placeholder="Description"
                   value={formData.description}
                   onChange={(e) => {
@@ -326,8 +339,9 @@ const Item = () => {
                   <div className="invalid-feedback">{errors.description}</div>
                 )}
                 <select
-                  className={`form-control mb-2 ${errors.category ? "is-invalid" : ""
-                    }`}
+                  className={`form-control mb-2 ${
+                    errors.category ? "is-invalid" : ""
+                  }`}
                   value={formData.category}
                   onChange={(e) => {
                     const value = e.target.value;

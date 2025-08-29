@@ -3,7 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 
 export function LoginForm() {
-  const [userDetails, setUserDetails] = useState({ username: "", password: "" });
+  const [userDetails, setUserDetails] = useState({
+    username: "",
+    password: "",
+  });
   const [errorName, setErrorName] = useState(false);
   const [errorPass, setErrorPass] = useState(false);
 
@@ -61,7 +64,8 @@ export function LoginForm() {
               />
               {errorName && (
                 <div className="invalid-feedback">
-                  Username must be 3-50 characters long (alphanumeric & underscore).
+                  Username must be 3-50 characters long (alphanumeric &
+                  underscore).
                 </div>
               )}
             </div>

@@ -6,6 +6,8 @@ function AdminDashboardMain() {
 
   const employees = useSelector((store) => store.employees.employees);
   const activeEmployeesLength=useSelector((store)=>store.employees.activeEmployeeCount);
+  const items = useSelector((store) => store.items);
+  const orders=useSelector((store) => store.orders);
 
   const [summary, setSummary] = useState({
     employees: 0,
@@ -19,17 +21,13 @@ function AdminDashboardMain() {
     async function fetchData() {
       try {
 
-        const [itemsRes, ordersRes, waitersRes] = await Promise.all([
-          api.get("/api/staff/items/all"),
-          api.get("/api/staff/orders/allOrders"),
-          api.get("/api/staff/waiters/available"),
-        ]);
+        const waitersRes = await api.get("/api/staff/waiters/available");
 
         setSummary((prev) => ({
           ...prev,
           employees: employees.length,
-          items: itemsRes?.data.data.length,
-          orders: ordersRes?.data.data.filter(order => order.status === "COMPLETED").length,
+          items: items.length,
+          orders: orders.length,
           activeEmployees: activeEmployeesLength,
           availableWaiters: waitersRes?.data?.data?.length || 0,
         }));

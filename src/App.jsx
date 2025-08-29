@@ -1,7 +1,11 @@
 import "./App.css";
 import { LoginForm } from "./pages/LoginForm";
 import Employee from "./pages/Employee";
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import UserProvider from "./utilities/UserContext";
 import AdminPage from "./pages/CommonParentPage";
 import Dashboard from "./pages/Dashboard";
@@ -9,13 +13,10 @@ import StaffPage from "./pages/CommonParentPage";
 import OrderForm from "./components/OrderForm";
 import ItemsManagement from "./components/ItemsAvailability";
 import OrdersTable from "./components/OrdersTable";
-import PendingOrders from "./components/PendingOrders";
 import ErrorPage from "./pages/ErrorPage";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { getCategories } from "./services/itemService";
-import { setItemCategories } from "./utilities/redux/slices/constantSlice";
-import Item from "./components/item";
+import Item from "./components/Item";
 
 function PrivateRoute({ children, roles }) {
   const token = localStorage.getItem("token");
@@ -32,12 +33,9 @@ function PrivateRoute({ children, roles }) {
 }
 
 export default function App() {
+  const dispatch = useDispatch();
 
-  const dispatch=useDispatch();
-
-  useEffect(() => {
-   
-  }, [dispatch]);
+  useEffect(() => {}, [dispatch]);
 
   const appRouter = createBrowserRouter([
     {
@@ -91,7 +89,7 @@ export default function App() {
           index: true,
           element: (
             <PrivateRoute roles={["ROLE_STAFF"]}>
-              <PendingOrders />
+              <ItemsManagement />
             </PrivateRoute>
           ),
         },
@@ -100,14 +98,6 @@ export default function App() {
           element: (
             <PrivateRoute roles={["ROLE_STAFF"]}>
               <OrderForm />
-            </PrivateRoute>
-          ),
-        },
-        {
-          path: "item-availability",
-          element: (
-            <PrivateRoute roles={["ROLE_STAFF"]}>
-              <ItemsManagement />
             </PrivateRoute>
           ),
         },
