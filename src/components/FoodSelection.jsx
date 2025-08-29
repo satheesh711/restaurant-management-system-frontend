@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import api from "../config/axiosConfig";
 import { addOrder } from "../utilities/redux/slices/orderSlice";
 import { useDispatch } from "react-redux";
+import { setLoading } from "../utilities/redux/slices/loadingSlice";
 
 export default function FoodSelection({ name, phone, waiterId }) {
   const [items, setItems] = useState([]);
@@ -14,7 +15,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
 
   useEffect(() => {
     api
-      .get("/api/staff/items/availableItems")
+      .get("/api/items/availableItems")
       .then((res) => {
         if (res.data.success) {
           setItems(res.data.data);
@@ -65,17 +66,17 @@ export default function FoodSelection({ name, phone, waiterId }) {
   const handleFinalConfirm = async () => {
     try {
       const totalPrice = getTotalAmount(selectedItems);
-
-      const response = await api.post("/api/staff/orders/addOrder", {
+      dispatch(setLoading(true));
+      const response = await api.post("/api/orders/addOrder", {
         name,
         phone,
         waiterId,
         totalPrice,
         orderDetailsList: getPayload(),
       });
+      dispatch(setLoading(false));
       const newOrder = response.data.data;
       dispatch(addOrder(newOrder));
-
       Swal.fire({
         icon: "success",
         title: "Order Placed Successfully!",

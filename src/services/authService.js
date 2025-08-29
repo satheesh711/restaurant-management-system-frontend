@@ -17,7 +17,6 @@ export const logout = async () => {
       const res = await api.post("/auth/logout", {}, { withCredentials: true });
       localStorage.removeItem("token");
       localStorage.removeItem("role");
-      alert("User Logged Out successfully");
    } catch (error) {
       alert("Logout failed");
       console.error("Logout failed:", error);
