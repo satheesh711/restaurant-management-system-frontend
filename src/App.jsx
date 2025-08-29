@@ -8,8 +8,8 @@ import {
 } from "react-router-dom";
 import UserProvider from "./utilities/UserContext";
 import AdminPage from "./pages/CommonParentPage";
-import Dashboard from "./pages/Dashboard";
 import StaffPage from "./pages/CommonParentPage";
+import Dashboard from "./pages/Dashboard";
 import OrderForm from "./components/OrderForm";
 import ItemsManagement from "./components/ItemsAvailability";
 import OrdersTable from "./components/OrdersTable";

@@ -9,7 +9,7 @@ function ItemsManagement() {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/api/staff/items/all");
+      const res = await api.get("/api/items/all");
       if (res.data.success) {
         setItems(res.data.data);
       } else {
@@ -31,7 +31,7 @@ function ItemsManagement() {
 
   const handleToggle = async (id) => {
     try {
-      const res = await api.post(`/api/staff/items/availability/${id}`);
+      const res = await api.post(`/api/items/availability/${id}`);
       if (res.data.success) {
         setItems((prev) =>
           prev.map((item) =>

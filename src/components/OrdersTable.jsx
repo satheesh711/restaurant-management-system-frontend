@@ -20,7 +20,7 @@ export default function OrdersTable() {
 
   // const fetchOrders = async () => {
   //   try {
-  //     const res = await api.get("/api/staff/orders/allOrders");
+  //     const res = await api.get("/api/orders/allOrders");
   //     if (res.data.success) setOrders(res.data.data);
   //   } catch (err) {
   //     console.error("Error fetching orders:", err);
@@ -30,7 +30,7 @@ export default function OrdersTable() {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await api.put(
-        `/api/staff/orders/updateStatus?orderId=${orderId}&status=${newStatus}`
+        `/api/orders/updateStatus?orderId=${orderId}&status=${newStatus}`
       );
       // setOrders((prev) =>
       //   prev.map((order) =>

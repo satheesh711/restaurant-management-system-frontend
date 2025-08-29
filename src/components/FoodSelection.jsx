@@ -14,7 +14,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
 
   useEffect(() => {
     api
-      .get("/api/staff/items/availableItems")
+      .get("/api/items/availableItems")
       .then((res) => {
         if (res.data.success) {
           setItems(res.data.data);
@@ -66,7 +66,7 @@ export default function FoodSelection({ name, phone, waiterId }) {
     try {
       const totalPrice = getTotalAmount(selectedItems);
 
-      const response = await api.post("/api/staff/orders/addOrder", {
+      const response = await api.post("/api/orders/addOrder", {
         name,
         phone,
         waiterId,

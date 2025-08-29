@@ -8,7 +8,7 @@ function ItemsManagement() {
   const fetchItems = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:8080/api/staff/items/all");
+      const res = await axios.get("http://localhost:8080/api/items/all");
       if (res.data.success) {
         setItems(res.data.data);
       } else {
@@ -28,7 +28,7 @@ function ItemsManagement() {
   const handleToggle = async (id) => {
     try {
       const res = await axios.post(
-        `http://localhost:8080/api/staff/items/availability/${id}`
+        `http://localhost:8080/api/items/availability/${id}`
       );
       if (res.data.success) {
         alert("Availability updated!");
