@@ -86,6 +86,7 @@ function Employee() {
     } catch (err) {
       console.log(err);
       Swal.fire("Error!", "Something went wrong", "error");
+      dispatch(setLoading(false));
     }
   };
 
@@ -106,6 +107,7 @@ function Employee() {
     } catch (err) {
       console.log(err);
       Swal.fire("Failed!", "Failed to Delete employee", "error");
+      dispatch(setLoading(false));
     }
   };
 
@@ -152,14 +154,6 @@ function Employee() {
           ➕ Add Employee
         </button>
       </div>
-      {/* {loading ? (
-        <div className="text-center my-4">
-          <div className="spinner-border text-primary" role="status"></div>
-          <p>Loading employees...</p>
-        </div>
-      ) : (
-        
-      )} */}
       <div className="table-responsive">
         <table className="table table-hover table-striped align-middle shadow-sm">
           <thead className="table-dark">

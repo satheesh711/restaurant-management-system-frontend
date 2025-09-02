@@ -185,6 +185,7 @@ const Item = () => {
     } catch (err) {
       console.log(err);
       errorShow(err.response?.data?.message || "Save failed");
+      dispatch(setLoading(false));
     }
   };
 
