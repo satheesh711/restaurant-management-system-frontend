@@ -153,7 +153,6 @@ function Employee() {
           ➕ Add Employee
         </button>
       </div>
-
       <div className="table-responsive">
         <table className="table table-hover table-striped align-middle shadow-sm">
           <thead className="table-dark">
