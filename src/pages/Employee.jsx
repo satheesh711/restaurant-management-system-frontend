@@ -271,14 +271,15 @@ function Employee() {
                   placeholder="Phone"
                   value={formData.phone}
                   maxLength="10"
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      phone: e.target.value.replace(/\D/g, ""),
-                    })
-                  }
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^[6-9]\d{0,9}$/.test(value) || value === "") {
+                      setFormData({ ...formData, phone: value });
+                    }
+                  }}
                   required
                 />
+
                 {errors.phone && (
                   <div className="text-danger small">{errors.phone}</div>
                 )}

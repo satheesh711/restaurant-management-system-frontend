@@ -50,7 +50,7 @@ export default function AdminDashboard() {
       dispatch(setOrders(ordersRes.data.data));
       // dispatch(setWaiters(waitersRes.data.data));
       if (isAdmin) {
-        const [empRes] = await Promise.all([api.get("/api/employees")]);
+        const empRes = await api.get("/api/employees");
         dispatch(setEmployees(empRes.data.data));
       }
     }

@@ -144,6 +144,7 @@ const Item = () => {
           dispatch(setLoading(false));
         } catch (err) {
           errorShow(err.response?.data?.message || "Delete failed");
+          dispatch(setLoading(false));
         }
       }
     });
@@ -175,7 +176,6 @@ const Item = () => {
           "item",
           new Blob([JSON.stringify(formData)], { type: "application/json" })
         );
-        dispatch(setLoading(true));
         const res = await addItem(item);
         dispatch(addItems(res.data));
         successShow(res.message);
@@ -185,7 +185,7 @@ const Item = () => {
     } catch (err) {
       console.log(err);
       errorShow(err.response?.data?.message || "Save failed");
-      dispatch(setLoading(false));
+        dispatch(setLoading(false));
     }
   };
 
